@@ -2,6 +2,7 @@ FetchContent_Declare(
 	glfw
     GIT_REPOSITORY https://github.com/glfw/glfw.git
     GIT_TAG b35641f4a3c62aa86a0b3c983d163bc0fe36026d
+    GIT_PROGRESS TRUE
 )
 
 # Set options to disable unnecessary components
