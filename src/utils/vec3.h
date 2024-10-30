@@ -1,10 +1,10 @@
 #pragma once
-
+#include <iostream>
 #include <array>
 #include "utils.h"
 
 // class to represent vectors and points in 3d space
-template<Arithmetic T>
+template<Arithmetic T = double>
 class Vec3 final
 {
 public:
