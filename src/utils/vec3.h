@@ -1,7 +1,8 @@
 #pragma once
 #include <iostream>
 #include <array>
-#include "utils.h"
+
+#include "custom_concepts.h"
 
 // class to represent vectors and points in 3d space
 template<Arithmetic T = double>

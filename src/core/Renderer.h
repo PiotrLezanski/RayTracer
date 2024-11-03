@@ -2,15 +2,19 @@
 #include <iostream>
 
 #include "../utils/utils.h"
-#include "Image.h"
+#include "Camera.h"
 #include "../utils/Color.h"
+#include "../utils/Ray.h"
 
 class Renderer
 {
 public:
-	explicit Renderer(std::shared_ptr<Image> image);
+	explicit Renderer(std::shared_ptr<Camera> camera);
 	void render();
 
+	std::shared_ptr<Camera> getCamera() const { return m_camera; }
+	std::shared_ptr<Image> getImage() const { return getCamera()->getImage(); }
+
 private:
-	std::shared_ptr<Image> m_image;
+	std::shared_ptr<Camera> m_camera;
 };

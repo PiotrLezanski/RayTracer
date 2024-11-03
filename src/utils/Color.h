@@ -3,8 +3,6 @@
 
 namespace ColorUtils
 {
-    using Color = Vec3<double>;
-
     inline void printColor(std::ostream& out, const Color& pixelColor)
     {
         auto r = pixelColor.x();
