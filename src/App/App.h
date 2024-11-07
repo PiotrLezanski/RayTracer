@@ -1,11 +1,15 @@
 #pragma once
 
-#include "../core/Image.h"
-#include "../core/Renderer.h"
-#include "../core/Camera.h"
+#include "MainUI.h"
 
 class App
 {
 public:
 	void init();
+
+private:
+	void prepareMainUI();
+
+private:
+	std::unique_ptr<MainUI> m_mainUI;
 };
