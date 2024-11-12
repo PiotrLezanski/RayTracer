@@ -12,7 +12,6 @@ class MainUI
 public:
 	MainUI(std::shared_ptr<Image> image, std::shared_ptr<Camera> camera,
 		std::shared_ptr<Renderer> renderer);
-	~MainUI();
 
 	void init();
 
@@ -21,6 +20,8 @@ private:
 	void initializeWindow();
 	void setupOpenGL();
 	void setupImGuiContext();
+	void setupUI();
+	void buildUI();
 	void cleanup();
 
 private:

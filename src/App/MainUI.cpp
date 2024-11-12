@@ -5,15 +5,12 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
+#include "../core/Windows/WindowsBuilder.h"
+
 MainUI::MainUI(std::shared_ptr<Image> image, std::shared_ptr<Camera> camera,
 	std::shared_ptr<Renderer> renderer)
 	: m_image(image), m_camera(camera), m_renderer(renderer)
 {
-}
-
-MainUI::~MainUI()
-{
-    delete m_window;
 }
 
 void MainUI::init()
@@ -22,9 +19,8 @@ void MainUI::init()
     initializeWindow();
     setupOpenGL();
     setupImGuiContext();
+    setupUI();
     cleanup();
-
-	//m_renderer->render();
 }
 
 void MainUI::initializeGLFW()
@@ -61,17 +57,26 @@ void MainUI::setupImGuiContext()
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGuiIO& io = ImGui::GetIO();
+    (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+
+    glfwInit();
+    // Load font and check if successful
+    if (!io.Fonts->AddFontFromFileTTF("C:/pv/uj/RayTracer/Resources/RobotoMedium.ttf", 20.0f))
+        std::cerr << "Failed to load font!" << std::endl;
+
     ImGui::StyleColorsDark();
 
     // Setup Platform/Renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(m_window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
+}
 
-    bool show_demo_window = true; // Toggle for the demo window
-
-    // Main loop
-    while (!glfwWindowShouldClose(m_window)) {
+void MainUI::setupUI()
+{
+    while (!glfwWindowShouldClose(m_window))
+    {
         glfwPollEvents();
 
         // Start ImGui frame
@@ -79,10 +84,8 @@ void MainUI::setupImGuiContext()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        // Display the demo window
-        if (show_demo_window) {
-            ImGui::ShowDemoWindow(&show_demo_window);
-        }
+        // main method to build ImGui windows
+        buildUI(); 
 
         // Render ImGui
         ImGui::Render();
@@ -96,6 +99,12 @@ void MainUI::setupImGuiContext()
         // Swap buffers
         glfwSwapBuffers(m_window);
     }
+}
+
+void MainUI::buildUI()
+{
+    WindowsBuilder windowsBuilder;
+    windowsBuilder.buildUI();
 }
 
 void MainUI::cleanup()
