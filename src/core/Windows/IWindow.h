@@ -3,6 +3,9 @@
 class IWindow
 {
 public:
-	virtual ~IWindow() = default;
 	virtual void init() = 0;
+	virtual ~IWindow() = default;
+
+protected:
+	
 };

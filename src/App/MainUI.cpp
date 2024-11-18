@@ -1,16 +1,16 @@
 #include "MainUI.h"
 
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
-#include "../core/Windows/WindowsBuilder.h"
-
 MainUI::MainUI(std::shared_ptr<Image> image, std::shared_ptr<Camera> camera,
 	std::shared_ptr<Renderer> renderer)
 	: m_image(image), m_camera(camera), m_renderer(renderer)
 {
+    m_windowsBuilder = std::make_unique<WindowsBuilder>();
 }
 
 void MainUI::init()
@@ -35,22 +35,26 @@ void MainUI::initializeGLFW()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 }
 
+void MainUI::setupOpenGL()
+{
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        std::cerr << "Failed to initialize GLAD" << std::endl;
+        return;
+    }
+}
+
 void MainUI::initializeWindow()
 {
-	m_window = glfwCreateWindow(1280, 720, "ImGui Demo", nullptr, nullptr);
-	if (!m_window)
+	m_mainWindow = glfwCreateWindow(1280, 720, "ImGui Demo", nullptr, nullptr);
+	if (!m_mainWindow)
 	{
 		std::cerr << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
 		return;
 	}
 
-	glfwMakeContextCurrent(m_window);
+	glfwMakeContextCurrent(m_mainWindow);
 	glfwSwapInterval(1); // Enable vsync
-}
-
-void MainUI::setupOpenGL()
-{
 }
 
 void MainUI::setupImGuiContext()
@@ -69,13 +73,13 @@ void MainUI::setupImGuiContext()
     ImGui::StyleColorsDark();
 
     // Setup Platform/Renderer bindings
-    ImGui_ImplGlfw_InitForOpenGL(m_window, true);
+    ImGui_ImplGlfw_InitForOpenGL(m_mainWindow, true);
     ImGui_ImplOpenGL3_Init("#version 330");
 }
 
 void MainUI::setupUI()
 {
-    while (!glfwWindowShouldClose(m_window))
+    while (!glfwWindowShouldClose(m_mainWindow))
     {
         glfwPollEvents();
 
@@ -85,26 +89,25 @@ void MainUI::setupUI()
         ImGui::NewFrame();
 
         // main method to build ImGui windows
-        buildUI(); 
+        buildUI();
 
         // Render ImGui
         ImGui::Render();
         int display_w, display_h;
-        glfwGetFramebufferSize(m_window, &display_w, &display_h);
+        glfwGetFramebufferSize(m_mainWindow, &display_w, &display_h);
         glViewport(0, 0, display_w, display_h);
         glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
         glClear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         // Swap buffers
-        glfwSwapBuffers(m_window);
+        glfwSwapBuffers(m_mainWindow);
     }
 }
 
 void MainUI::buildUI()
 {
-    WindowsBuilder windowsBuilder;
-    windowsBuilder.buildUI();
+    m_windowsBuilder->buildUI();
 }
 
 void MainUI::cleanup()
@@ -113,6 +116,6 @@ void MainUI::cleanup()
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
 
-	glfwDestroyWindow(m_window);
+	glfwDestroyWindow(m_mainWindow);
 	glfwTerminate();
 }

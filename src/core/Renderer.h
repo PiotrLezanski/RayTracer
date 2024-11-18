@@ -3,7 +3,6 @@
 
 #include "../utils/utils.h"
 #include "Camera.h"
-#include "../utils/Color.h"
 #include "../utils/Ray.h"
 
 class Renderer
@@ -17,4 +16,5 @@ public:
 
 private:
 	std::shared_ptr<Camera> m_camera;
+	bool m_isImageRendered = false;
 };
