@@ -32,7 +32,7 @@ void Renderer::render()
             const Point3d& cameraCenter = getCamera()->getCameraCenter();
             const Vec& rayDirection = pixelCenter - cameraCenter;
 
-            Ray ray(cameraCenter, rayDirection);
+            const Ray ray(cameraCenter, rayDirection);
             const Color& pixelColor = ray.calculateColor();
 
             image->setColorAt(i, j, pixelColor);
