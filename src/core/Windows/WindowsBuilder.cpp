@@ -5,6 +5,7 @@
 
 WindowsBuilder::WindowsBuilder()
 {
+	// List of windows
 	m_windows.emplace_back(std::make_unique<RenderedImageWindow>());
 }
 

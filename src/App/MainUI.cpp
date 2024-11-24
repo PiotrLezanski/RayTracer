@@ -6,9 +6,7 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
-MainUI::MainUI(std::shared_ptr<Image> image, std::shared_ptr<Camera> camera,
-	std::shared_ptr<Renderer> renderer)
-	: m_image(image), m_camera(camera), m_renderer(renderer)
+MainUI::MainUI()
 {
     m_windowsBuilder = std::make_unique<WindowsBuilder>();
 }

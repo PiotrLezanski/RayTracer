@@ -5,7 +5,7 @@
 Image::Image(int32 height)
 	: m_height(height)
 {
-	m_width = m_height * int32(m_aspectRatio);
+	m_width = m_height * m_aspectRatio;
 	m_data = std::vector<std::vector<Color>>(m_height, 
 				std::vector<Color>(m_width, DEFAULT_COLOR));
 }
@@ -21,7 +21,7 @@ void Image::printColorToRGB(std::ostream& out, const Color& color) const
 		<< static_cast<int>(256 * std::clamp(b, 0.0, 0.999)) << ' ';
 }
 
-Color& Image::getColorAt(uint8_t x, uint8_t y)
+Color& Image::getColorAt(uint32_t x, uint32_t y)
 {
 	if(x >= m_data.size() || y >= m_data[0].size())
 	{
@@ -31,7 +31,7 @@ Color& Image::getColorAt(uint8_t x, uint8_t y)
 	return m_data[x][y];
 }
 
-void Image::setColorAt(uint8_t x, uint8_t y, const Color& newColor)
+void Image::setColorAt(uint32_t x, uint32_t y, const Color& newColor)
 {
 	if (x >= m_data.size() || y >= m_data[0].size())
 		return;

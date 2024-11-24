@@ -1,14 +1,12 @@
 #include "Renderer.h"
 
-using Color = Vec3<double>;
-
 Renderer::Renderer(std::shared_ptr<Camera> camera)
 	: m_camera(camera)
 {
 
 }
 
-void Renderer::render()
+void Renderer::render(const HittableScene& world)
 {
     if (m_isImageRendered)
         return;
@@ -33,7 +31,7 @@ void Renderer::render()
             const Vec& rayDirection = pixelCenter - cameraCenter;
 
             const Ray ray(cameraCenter, rayDirection);
-            const Color& pixelColor = ray.calculateColor();
+            const Color& pixelColor = ray.calculateColor(world);
 
             image->setColorAt(i, j, pixelColor);
         }

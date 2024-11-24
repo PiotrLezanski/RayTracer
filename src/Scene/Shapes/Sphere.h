@@ -1,15 +1,14 @@
 #pragma once
 
-#include "../utils/utils.h"
-#include "../utils/Ray.h"
+#include "../Hittable.h"
+#include "../../utils/Ray.h"
 
-class Sphere
+class Sphere : public Hittable
 {
 public:
 	Sphere(Point3d center, double radius);
 
-	// checks if this sphere can be hit by given Ray
-	bool isHittableBy(const Ray& ray);
+	bool hit(const Ray& ray, Interval t_MinMax, HitRecord& rec) const override;
 
 	[[nodiscard]] const Point3d& getCenter() const { return m_center; }
 	[[nodiscard]] const double& getRadius() const { return m_radius; }

@@ -1,15 +1,17 @@
 #pragma once
-#include <iostream>
 
 #include "../utils/utils.h"
 #include "Camera.h"
 #include "../utils/Ray.h"
+#include "../Scene/HittableScene.h"
+
+#include <iostream>
 
 class Renderer
 {
 public:
 	explicit Renderer(std::shared_ptr<Camera> camera);
-	void render();
+	void render(const HittableScene& world);
 
 	std::shared_ptr<Camera> getCamera() const { return m_camera; }
 	std::shared_ptr<Image> getImage() const { return getCamera()->getImage(); }
