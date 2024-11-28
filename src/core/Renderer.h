@@ -17,6 +17,16 @@ public:
 	std::shared_ptr<Image> getImage() const { return getCamera()->getImage(); }
 
 private:
+	// Return final color of given pixel
+	// Antialiasing is part of this process
+	const Color& calculateFinalColorAt(const HittableScene& world, int i, int j);
+
+private:
 	std::shared_ptr<Camera> m_camera;
 	bool m_isImageRendered = false;
+
+	// Count of random samples for each pixel
+	// Used for antialiasing
+	const int m_samplesPerPixel = 10;
+	const double m_scale = 1.0 / m_samplesPerPixel;
 };

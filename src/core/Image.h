@@ -13,8 +13,8 @@ public:
 	[[nodiscard]] int32 width() const { return m_width; }
 
 	[[nodiscard]] void printColorToRGB(std::ostream& out, const Color& color) const;
-	[[nodiscard]] Color& getColorAt(uint32_t x, uint32_t y);
-	void setColorAt(uint32_t x, uint32_t y, const Color& newColor);
+	[[nodiscard]] Color& getColorAt(int32 x, int32 y);
+	void setColorAt(int32 x, int32 y, const Color& newColor);
 	void printImagePPM(std::ostream& out) const;
 
 private:

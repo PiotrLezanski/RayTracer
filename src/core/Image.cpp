@@ -21,19 +21,16 @@ void Image::printColorToRGB(std::ostream& out, const Color& color) const
 		<< static_cast<int>(256 * std::clamp(b, 0.0, 0.999)) << ' ';
 }
 
-Color& Image::getColorAt(uint32_t x, uint32_t y)
+Color& Image::getColorAt(int32 x, int32 y)
 {
-	if(x >= m_data.size() || y >= m_data[0].size())
-	{
-		static Color defaultColor = DEFAULT_COLOR; // Static to ensure a valid reference
-		return defaultColor;
-	}
+	x = std::clamp(x, (int32)0, height()-1);
+	y = std::clamp(y, (int32)0, width()-1);
 	return m_data[x][y];
 }
 
 void Image::setColorAt(uint32_t x, uint32_t y, const Color& newColor)
 {
-	if (x >= m_data.size() || y >= m_data[0].size())
+	if (x >= height() || y >= width())
 		return;
 
 	m_data[x][y] = newColor;
