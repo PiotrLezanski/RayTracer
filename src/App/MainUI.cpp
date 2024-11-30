@@ -65,8 +65,8 @@ void MainUI::setupImGuiContext()
 
     glfwInit();
     // Load font and check if successful
-    if (!io.Fonts->AddFontFromFileTTF("C:/pv/uj/RayTracer/Resources/RobotoMedium.ttf", 20.0f))
-        std::cerr << "Failed to load font!" << std::endl;
+    /*if (!io.Fonts->AddFontFromFileTTF("C:/pv/uj/RayTracer/Resources/RobotoMedium.ttf", 20.0f))
+        std::cerr << "Failed to load font!" << std::endl;*/
 
     ImGui::StyleColorsDark();
 
