@@ -35,3 +35,54 @@ inline double randomDouble()
     static std::mt19937 generator;
     return distribution(generator);
 }
+
+// Returns a random double between [min,max).
+inline double randomDouble(double min, double max)
+{
+    return min + (max - min) * randomDouble();
+}
+
+// Converts a linear color value to a gamma-corrected value.
+inline double linearToGamma(double linear)
+{
+    if (linear <= 0)
+        return 0;
+
+    return std::sqrt(linear);
+}
+
+// Vector utility functions
+inline Vec randomVector()
+{
+    return Vec(randomDouble(), randomDouble(), randomDouble());
+}
+
+// Vector utility functions
+inline Vec randomVector(double min, double max)
+{
+    return Vec(randomDouble(min, max), randomDouble(min, max), randomDouble(min, max));
+}
+
+// Generates a random vector on the surface of a unit sphere (magnitude 1)
+inline Vec randomUnitVec()
+{
+    while (true) 
+    {
+        Vec vec = randomVector(-1, 1);
+        if (vec.length() >= 1)
+            continue;
+        return vec;
+    }
+}
+
+// Generates a random vector uniformly distributed on the hemisphere
+// defined by the given normal vector.
+inline Vec randomVectorOnHemisphere(const Vec& normal)
+{
+    Vec unitVec = randomUnitVec();
+    // Check if unit vector is in the same hemisphere as the normal
+    if (dot_product(unitVec, normal) > 0.0)
+        return unitVec;
+    else
+        return -unitVec;
+}

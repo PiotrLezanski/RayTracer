@@ -58,7 +58,7 @@ const Color& Renderer::calculateFinalColorAt(const HittableScene& world, int i, 
         const Vec& rayDirection = pixelCenter - cameraCenter;
         const Ray ray(cameraCenter, rayDirection);
 
-        finalColor += ray.calculateColor(world);
+        finalColor += ray.calculateColor(world, m_maxRayRecursionDepth);
     }
 
     // Pixel color is divided, because of antialiasing.

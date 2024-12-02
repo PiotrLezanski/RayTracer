@@ -12,9 +12,9 @@ Image::Image(int32 height)
 
 void Image::printColorToRGB(std::ostream& out, const Color& color) const
 {
-	const auto r = color.x();
-	const auto g = color.y();
-	const auto b = color.z();
+	const auto r = linearToGamma(color.x());
+	const auto g = linearToGamma(color.y());
+	const auto b = linearToGamma(color.z());
 
 	out << static_cast<int>(256 * std::clamp(r, 0.0, 0.999)) << ' '
 		<< static_cast<int>(256 * std::clamp(g, 0.0, 0.999)) << ' '

@@ -29,4 +29,7 @@ private:
 	// Used for antialiasing
 	const int m_samplesPerPixel = 10;
 	const double m_scale = 1.0 / m_samplesPerPixel;
+
+	// Maximum number of ray bounces into scene
+	int m_maxRayRecursionDepth = 20;
 };

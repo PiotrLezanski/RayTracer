@@ -16,8 +16,10 @@ public:
 
 	Point3d at(double t) const { return m_origin + t * m_dir; }
 
-	// Calculate color of the pixel in the scene that Ray hit
-	Color calculateColor(const Hittable& scene) const;
+	// Calculate color of the pixel in the scene that Ray hit.
+	// This method recursively hits the scene.
+	// Maximum number of iterations is given by depth.
+	Color calculateColor(const Hittable& scene, int depth) const;
 
 	const Point3d& getOrigin() const { return m_origin; }
 	const Vec& getDirection() const { return m_dir; }
