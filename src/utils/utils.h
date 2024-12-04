@@ -86,3 +86,24 @@ inline Vec randomVectorOnHemisphere(const Vec& normal)
     else
         return -unitVec;
 }
+
+// Calculates the reflection of a vector "vec" off a surface defined by its normal vector "normal".
+// This formula ensures that the incoming vector is reflected symmetrically across the plane.
+// The result is a new vector pointing in the direction of the reflection, maintaining the 
+// law of reflection: the angle of incidence equals the angle of reflection.
+//             ^ normal
+//             |   
+//   incoming  |   reflected
+//   vector    |   vector
+//       \     |     /
+//        \    |    /
+//         \   |   /
+//          \  |  /
+//           \ | /
+//            \|/
+//  -----------*-------------> Surface
+//           point (point of reflection)
+inline Vec reflect(const Vec& vec, const Vec& normal)
+{
+    return vec - 2 * dot_product(vec, normal) * normal;
+}
