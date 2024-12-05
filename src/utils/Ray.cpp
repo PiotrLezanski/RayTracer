@@ -1,5 +1,6 @@
 #include "Ray.h"
 #include "../Scene/Shapes/Sphere.h"
+#include "../Scene/Materials/Material.h"
 
 Color Ray::calculateColor(const Hittable& scene, int depth) const
 {
@@ -9,8 +10,11 @@ Color Ray::calculateColor(const Hittable& scene, int depth) const
 	HitRecord hitRecord;
 	if (scene.hit(*this, Interval(0.001, INF), hitRecord))
 	{
-		const Vec& direction = hitRecord.normalVec + randomUnitVec();
-		return 0.5 * Ray(hitRecord.point, direction).calculateColor(scene, depth-1);
+		Ray scattered;
+		Color attenuation;
+		if (hitRecord.material->scatter(*this, hitRecord, attenuation, scattered))
+			return attenuation * scattered.calculateColor(scene, depth - 1);
+		return DEFAULT_COLOR;
 	}
 
 	const Vec unitDirection = unit_vector(getDirection());

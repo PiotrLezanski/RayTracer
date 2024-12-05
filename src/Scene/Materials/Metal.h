@@ -20,7 +20,7 @@ private:
 bool Metal::scatter(const Ray& rayIn, const HitRecord& hitRecord, Color& attenuation, Ray& rayScattered) const
 {
     const Vec reflected = reflect(rayIn.getDirection(), hitRecord.normalVec);
-    scattered = Ray(hitRecord.point, reflected);
+    rayScattered = Ray(hitRecord.point, reflected);
     attenuation = m_albedo;
     return true;
 }

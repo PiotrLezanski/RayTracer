@@ -1,7 +1,7 @@
 #include "Sphere.h"
 
-Sphere::Sphere(Point3d center, double radius)
-	: m_center(center), m_radius(radius)
+Sphere::Sphere(Point3d center, double radius, std::shared_ptr<Material> material)
+	: Hittable(material), m_center(center), m_radius(std::fmax(0, radius))
 {
 }
 
@@ -33,6 +33,7 @@ bool Sphere::hit(const Ray& ray, Interval t_MinMax, HitRecord& rec) const
     rec.t = root;
     Vec outwardNormal = (rec.point - getCenter()) / getRadius();
     rec.setFaceNormal(ray, outwardNormal);
+    rec.material = getMaterial();
 
 	return true;
 }
