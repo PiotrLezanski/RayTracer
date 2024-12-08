@@ -58,6 +58,13 @@ inline double linearToGamma(double linear)
     return std::sqrt(linear);
 }
 
+inline void linearToGamma(Color& color)
+{
+    color[0] = linearToGamma(color[0]);
+    color[1] = linearToGamma(color[1]);
+    color[2] = linearToGamma(color[2]);
+}
+
 // Vector utility functions
 inline Vec randomVector()
 {
@@ -113,4 +120,19 @@ inline Vec randomVectorOnHemisphere(const Vec& normal)
 inline Vec reflect(const Vec& vec, const Vec& normal)
 {
     return vec - 2 * dot_product(vec, normal) * normal;
+}
+
+// This function calculates the refraction vector given an incident vector (uv),
+// a surface normal (n), and the ratio of refractive indices
+inline Vec refract(const Vec& uv, const Vec& n, double refractionRatio)
+{
+    // Compute the cosine of the angle between the incident vector and the normal.
+    double cos_theta = std::fmin(dot_product(-uv, n), 1.0);
+
+    Vec outPerpendicular = refractionRatio * (uv + cos_theta * n);
+    Vec outParallel = -std::sqrt(std::fabs(1.0 - outPerpendicular.length())) * n;
+
+    // Return the sum of the perpendicular and parallel components,
+    // which gives the final refracted vector
+    return outPerpendicular + outParallel;
 }

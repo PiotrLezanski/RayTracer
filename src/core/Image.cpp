@@ -28,7 +28,7 @@ Color& Image::getColorAt(int32 x, int32 y)
 	return m_data[x][y];
 }
 
-void Image::setColorAt(uint32_t x, uint32_t y, const Color& newColor)
+void Image::setColorAt(int32 x, int32 y, const Color& newColor)
 {
 	if (x >= height() || y >= width())
 		return;

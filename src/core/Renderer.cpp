@@ -86,7 +86,7 @@ GLuint Renderer::createTextureFromImage() const
     return textureID;
 }
 
-const Color& Renderer::calculateFinalColorAt(const HittableScene& world, int i, int j)
+const Color& Renderer::calculateFinalColorAt(const HittableScene& world, int i, int j, bool gammaCorrect)
 {
     Color finalColor(0, 0, 0);
 	std::shared_ptr<Viewport> viewport = getCamera()->getViewport();
@@ -107,5 +107,10 @@ const Color& Renderer::calculateFinalColorAt(const HittableScene& world, int i, 
 
     // Pixel color is divided, because of antialiasing.
 	// We take average of colors gathered randomly from the sample.
-	return m_scale * finalColor;
+    finalColor = m_scale * finalColor;
+
+    if (gammaCorrect)
+        linearToGamma(finalColor);
+
+	return finalColor;
 }

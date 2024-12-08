@@ -31,6 +31,6 @@ private:
 	std::shared_ptr<Camera> m_camera;
 	std::shared_ptr<Renderer> m_renderer;
 
-	GLFWwindow* m_mainWindow;
+	GLFWwindow* m_mainWindow = nullptr;
 	std::unique_ptr<WindowsBuilder> m_windowsBuilder;
 };

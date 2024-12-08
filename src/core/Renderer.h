@@ -27,7 +27,8 @@ public:
 private:
 	// Return final color of given pixel
 	// Antialiasing is part of this process
-	const Color& calculateFinalColorAt(const HittableScene& world, int i, int j);
+	// By default color will be gamma-corrected.
+	const Color& calculateFinalColorAt(const HittableScene& world, int i, int j, bool gammaCorrect = true);
 
 private:
 	std::shared_ptr<Camera> m_camera;
