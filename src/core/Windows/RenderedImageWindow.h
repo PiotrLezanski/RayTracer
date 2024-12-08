@@ -12,6 +12,7 @@ class RenderedImageWindow : public IWindow
 public:
 	RenderedImageWindow();
 	void init() override;
+	void initImGuiFrame() override;
 
 private:
 	std::shared_ptr<Image> m_image;

@@ -21,6 +21,8 @@ void Renderer::render(const HittableScene& world)
         return;
 
     std::shared_ptr<Image> image = getImage();
+    if (!image)
+        return;
 
     // Image
     int32 image_width = image->width();
@@ -39,7 +41,49 @@ void Renderer::render(const HittableScene& world)
     std::clog << "\rDone.                 \n";
 
     m_isImageRendered = true;
-    image->printImagePPM(std::cout);
+}
+
+GLuint Renderer::createTextureFromImage() const
+{
+    if (!isImageRendered())
+        return GLuint();
+
+    const int32 imageWidth = getImage()->width();
+    const int32 imageHeight = getImage()->height();
+
+    // Resize and fill renderTexture with pixel data
+    std::vector<uint8_t> renderTexture;
+    renderTexture.resize(4 * imageWidth * imageHeight);
+
+    for (int32 x = 0; x < imageHeight; ++x) {
+        for (int32 y = 0; y < imageWidth; ++y) {
+            const Color& c = getImage()->getColorAt(x, y);
+            renderTexture[(x * imageWidth + y) * 4 + 0] = uint8_t(std::fabs(c[0] * 255));
+            renderTexture[(x * imageWidth + y) * 4 + 1] = uint8_t(std::fabs(c[1] * 255));
+            renderTexture[(x * imageWidth + y) * 4 + 2] = uint8_t(std::fabs(c[2] * 255));
+            renderTexture[(x * imageWidth + y) * 4 + 3] = 255;
+        }
+    }
+
+    // Generate and bind texture
+    unsigned textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+
+    // Set texture parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    // Upload texture data with correct type
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageWidth, imageHeight,
+        0, GL_RGBA, GL_UNSIGNED_BYTE, renderTexture.data());
+
+	// Unbind texture
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    return textureID;
 }
 
 const Color& Renderer::calculateFinalColorAt(const HittableScene& world, int i, int j)

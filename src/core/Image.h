@@ -17,6 +17,8 @@ public:
 	void setColorAt(int32 x, int32 y, const Color& newColor);
 	void printImagePPM(std::ostream& out) const;
 
+	const double getAspectRatio() const { return m_aspectRatio; }
+
 private:
 	int32 m_height;
 	int32 m_width;

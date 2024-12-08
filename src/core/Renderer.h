@@ -1,5 +1,6 @@
 #pragma once
 
+#include "glad/glad.h"
 #include "../utils/utils.h"
 #include "Camera.h"
 #include "../utils/Ray.h"
@@ -11,10 +12,17 @@ class Renderer
 {
 public:
 	explicit Renderer(std::shared_ptr<Camera> camera);
+
+	// Main method to render 
 	void render(const HittableScene& world);
+
+	// If image is rendered, create ImGui texture from it
+	// It is used to view it in ImGui window
+	GLuint createTextureFromImage() const;
 
 	std::shared_ptr<Camera> getCamera() const { return m_camera; }
 	std::shared_ptr<Image> getImage() const { return getCamera()->getImage(); }
+	bool isImageRendered() const { return m_isImageRendered; }
 
 private:
 	// Return final color of given pixel
