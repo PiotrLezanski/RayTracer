@@ -14,11 +14,13 @@ namespace
         auto materialGround = std::make_shared<Lambertian>(Color(0.8, 0.8, 0.0));
         auto materialCenter = std::make_shared<Lambertian>(Color(0.1, 0.2, 0.5));
         auto materialLeft = std::make_shared<Refractive>(1.50);
+        auto materialBubble = std::make_shared<Refractive>(1.00 / 1.50);
         auto materialRight = std::make_shared<Metal>(Color(0.8, 0.6, 0.2), 1.0);
 
         world.add(std::make_shared<Sphere>(Point3d(0.0, -100.5, -1.0), 100.0, materialGround));
         world.add(std::make_shared<Sphere>(Point3d(0.0, 0.0, -1.2), 0.5, materialCenter));
         world.add(std::make_shared<Sphere>(Point3d(-1.0, 0.0, -1.0), 0.5, materialLeft));
+        world.add(std::make_shared<Sphere>(Point3d(-1.0, 0.0, -1.0), 0.4, materialBubble));
         world.add(std::make_shared<Sphere>(Point3d(1.0, 0.0, -1.0), 0.5, materialRight));
 
         return world;
@@ -27,7 +29,7 @@ namespace
 
 RenderedImageWindow::RenderedImageWindow()
 {
-    m_image = std::make_shared<Image>(256);
+    m_image = std::make_shared<Image>(RENDERED_IMAGE_HEIGHT);
     m_camera = std::make_shared<Camera>(m_image);
     m_renderer = std::make_shared<Renderer>(m_camera);
 }

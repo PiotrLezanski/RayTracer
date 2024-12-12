@@ -21,7 +21,7 @@ using Vec = Vec3<double>;
 const inline Color DEFAULT_COLOR = Color(0, 0, 0);
 const double INF = std::numeric_limits<double>::infinity();
 const double PI = 3.1415926535897932385;
-const double RENDERED_IMAGE_HEIGHT = 256;
+const int32 RENDERED_IMAGE_HEIGHT = 256;
 
 // Utility Functions
 inline double degreesToRadians(double degrees)
@@ -124,7 +124,7 @@ inline Vec refract(const Vec& uv, const Vec& n, double refractionRatio)
     double cos_theta = std::fmin(dot_product(-uv, n), 1.0);
 
     Vec outPerpendicular = refractionRatio * (uv + cos_theta * n);
-    Vec outParallel = -std::sqrt(std::fabs(1.0 - outPerpendicular.length())) * n;
+    Vec outParallel = -std::sqrt(std::fabs(1.0 - outPerpendicular.cords_squared())) * n;
 
     // Return the sum of the perpendicular and parallel components,
     // which gives the final refracted vector
