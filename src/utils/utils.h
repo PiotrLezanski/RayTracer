@@ -21,13 +21,7 @@ using Vec = Vec3<double>;
 const inline Color DEFAULT_COLOR = Color(0, 0, 0);
 const double INF = std::numeric_limits<double>::infinity();
 const double PI = 3.1415926535897932385;
-
-// Return types
-enum class Err
-{
-    ERROR = 0,
-    SUCCESS
-};
+const double RENDERED_IMAGE_HEIGHT = 256;
 
 // Utility Functions
 inline double degreesToRadians(double degrees)
@@ -135,4 +129,18 @@ inline Vec refract(const Vec& uv, const Vec& n, double refractionRatio)
     // Return the sum of the perpendicular and parallel components,
     // which gives the final refracted vector
     return outPerpendicular + outParallel;
+}
+
+// Calculates the reflectance of light at the interface between two media with different
+// refractive indices using Schlick's approximation. Reflectance determines how much
+// light is reflected versus refracted at the boundary.
+// This is useful in for simulating realistic light interactions with surfaces like glass or water.
+// "cosine" - The cosine of the angle between the incident ray and the surface normal.
+// "refractionIndex" - The refractive index of the material being entered.
+// Return - The reflectance value (between 0 and 1), indicating the fraction of light reflected.
+inline double reflectance(double cos, double refractionIndex)
+{
+    double r0 = (1 - refractionIndex) / (1 + refractionIndex);
+    r0 = std::pow(r0, 2);
+    return r0 + (1 - r0) * std::pow((1 - cos), 5);
 }
