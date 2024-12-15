@@ -5,7 +5,7 @@
 class App
 {
 public:
-	void init();
+	inline void init();
 
 private:
 	std::unique_ptr<MainUI> m_mainUI;

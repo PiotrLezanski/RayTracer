@@ -150,6 +150,8 @@ T dot_product(const Vec3<T>& lhs, const Vec3<T>& rhs)
         lhs.m_data[2] * rhs.m_data[2];
 }
 
+// Cross product of two vectors produces a vector perpendicular to both given vectors.
+// We can image these two vectors lying on one plane, and produced one is perpendicular to it.
 template<Arithmetic T>
 Vec3<T> cross_product(const Vec3<T>& lhs, const Vec3<T>& rhs)
 {
