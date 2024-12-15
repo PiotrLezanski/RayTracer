@@ -40,5 +40,5 @@ private:
 	const double m_scale = 1.0 / m_samplesPerPixel;
 
 	// Maximum number of ray bounces into scene
-	int m_maxRayRecursionDepth = 20;
+	int m_maxRayRecursionDepth = 10;
 };

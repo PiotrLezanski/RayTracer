@@ -11,17 +11,47 @@ namespace
 	HittableScene createMainScene()
 	{
         HittableScene world;
-        auto materialGround = std::make_shared<Lambertian>(Color(0.8, 0.8, 0.0));
-        auto materialCenter = std::make_shared<Lambertian>(Color(0.1, 0.2, 0.5));
-        auto materialLeft = std::make_shared<Refractive>(1.50);
-        auto materialBubble = std::make_shared<Refractive>(1.00 / 1.50);
-        auto materialRight = std::make_shared<Metal>(Color(0.8, 0.6, 0.2), 1.0);
+        auto ground_material = std::make_shared<Lambertian>(Color(0.5, 0.5, 0.5));
+        world.add(std::make_shared<Sphere>(Point3d(0, -1000, 0), 1000, ground_material));
 
-        world.add(std::make_shared<Sphere>(Point3d(0.0, -100.5, -1.0), 100.0, materialGround));
-        world.add(std::make_shared<Sphere>(Point3d(0.0, 0.0, -1.2), 0.5, materialCenter));
-        world.add(std::make_shared<Sphere>(Point3d(-1.0, 0.0, -1.0), 0.5, materialLeft));
-        world.add(std::make_shared<Sphere>(Point3d(-1.0, 0.0, -1.0), 0.4, materialBubble));
-        world.add(std::make_shared<Sphere>(Point3d(1.0, 0.0, -1.0), 0.5, materialRight));
+        for (int a = -11; a < 11; a++) {
+            for (int b = -11; b < 11; b++) {
+                auto choose_mat = randomDouble();
+                Point3d center(a + 0.9 * randomDouble(), 0.2, b + 0.9 * randomDouble());
+
+                if ((center - Point3d(4, 0.2, 0)).length() > 0.9) {
+                    std::shared_ptr<Material> sphere_material;
+
+                    if (choose_mat < 0.8) {
+                        // diffuse
+                        auto albedo = randomVector() * randomVector();
+                        sphere_material = std::make_shared<Lambertian>(albedo);
+                        world.add(std::make_shared<Sphere>(center, 0.2, sphere_material));
+                    }
+                    else if (choose_mat < 0.95) {
+                        // metal
+                        auto albedo = randomVector(0.5, 1);
+                        auto fuzz = randomDouble(0, 0.5);
+                        sphere_material = std::make_shared<Metal>(albedo, fuzz);
+                        world.add(std::make_shared<Sphere>(center, 0.2, sphere_material));
+                    }
+                    else {
+                        // glass
+                        sphere_material = std::make_shared<Refractive>(1.5);
+                        world.add(std::make_shared<Sphere>(center, 0.2, sphere_material));
+                    }
+                }
+            }
+        }
+
+        auto material1 = std::make_shared<Refractive>(1.5);
+        world.add(std::make_shared<Sphere>(Point3d(0, 1, 0), 1.0, material1));
+
+        auto material2 = std::make_shared<Lambertian>(Color(0.4, 0.2, 0.1));
+        world.add(std::make_shared<Sphere>(Point3d(-4, 1, 0), 1.0, material2));
+
+        auto material3 = std::make_shared<Metal>(Color(0.7, 0.6, 0.5), 0.0);
+        world.add(std::make_shared<Sphere>(Point3d(4, 1, 0), 1.0, material3));
 
         return world;
 	}
@@ -30,7 +60,7 @@ namespace
 RenderedImageWindow::RenderedImageWindow()
 {
     m_image = std::make_shared<Image>(RENDERED_IMAGE_HEIGHT);
-    m_camera = std::make_shared<Camera>(m_image, Point3d(-2, 2, 1), Point3d(0, 0, -1), 20);
+    m_camera = std::make_shared<Camera>(m_image, Point3d(13, 2, 3), Point3d(0, 0, 0), 20);
     m_renderer = std::make_shared<Renderer>(m_camera);
 }
 
