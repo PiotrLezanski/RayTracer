@@ -14,8 +14,38 @@ namespace
         auto ground_material = std::make_shared<Lambertian>(Color(0.5, 0.5, 0.5));
         world.add(std::make_shared<Sphere>(Point3d(0, -1000, 0), 1000, ground_material));
 
-        for (int a = -11; a < 11; a++) {
-            for (int b = -11; b < 11; b++) {
+        //for (int a = -11; a < 11; a++) {
+        //    for (int b = -11; b < 11; b++) {
+        //        auto choose_mat = randomDouble();
+        //        Point3d center(a + 0.9 * randomDouble(), 0.2, b + 0.9 * randomDouble());
+
+        //        if ((center - Point3d(4, 0.2, 0)).length() > 0.9) {
+        //            std::shared_ptr<Material> sphere_material;
+
+        //            if (choose_mat < 0.8) {
+        //                // diffuse
+        //                auto albedo = randomVector() * randomVector();
+        //                sphere_material = std::make_shared<Lambertian>(albedo);
+        //                world.add(std::make_shared<Sphere>(center, 0.2, sphere_material));
+        //            }
+        //            else if (choose_mat < 0.95) {
+        //                // metal
+        //                auto albedo = randomVector(0.5, 1);
+        //                auto fuzz = randomDouble(0, 0.5);
+        //                sphere_material = std::make_shared<Metal>(albedo, fuzz);
+        //                world.add(std::make_shared<Sphere>(center, 0.2, sphere_material));
+        //            }
+        //            else {
+        //                // glass
+        //                sphere_material = std::make_shared<Refractive>(1.5);
+        //                world.add(std::make_shared<Sphere>(center, 0.2, sphere_material));
+        //            }
+        //        }
+        //    }
+        //}
+
+        for (int a = -5; a < 5; a++) {
+            for (int b = -5; b < 5; b++) {
                 auto choose_mat = randomDouble();
                 Point3d center(a + 0.9 * randomDouble(), 0.2, b + 0.9 * randomDouble());
 
@@ -66,12 +96,15 @@ RenderedImageWindow::RenderedImageWindow()
 
 void RenderedImageWindow::init()
 {
-    // Create Scene to be rendered
-    // Scene consist of Hittable objects
-    HittableScene world = std::move(createMainScene());
+    if (!m_renderer->isImageRendered())
+    {
+        // Create Scene to be rendered
+        // Scene consist of Hittable objects
+        HittableScene world = std::move(createMainScene());
 
-    // Rendered image can be retrieved from renderer
-    m_renderer->render(world);
+        // Rendered image can be retrieved from renderer
+        m_renderer->startRendering(world);
+    }
 
 	// UI will be built here
     initImGuiFrame();
@@ -108,8 +141,7 @@ void RenderedImageWindow::initImGuiFrame()
     }
 
     // Get rendered image texture and view it on the screen
-    const auto textureId = m_renderer->createTextureFromImage();
-    ImGui::Image((ImTextureID)(intptr_t)textureId, ImVec2(width, height));
+    ImGui::Image((ImTextureID)(intptr_t)m_renderer->getTextureId(), ImVec2(width, height));
 
     ImGui::End();
 }

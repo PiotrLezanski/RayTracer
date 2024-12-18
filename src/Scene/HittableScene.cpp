@@ -2,7 +2,8 @@
 
 void HittableScene::add(std::shared_ptr<Hittable> obj)
 {
-	m_sceneVec.emplace_back(obj);
+	if(obj)
+		m_sceneVec.emplace_back(obj);
 }
 
 bool HittableScene::hit(const Ray& ray, Interval t_MinMax, HitRecord& hitRecord) const

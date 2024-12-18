@@ -1,5 +1,7 @@
 #include "Renderer.h"
 
+#include <future>
+
 namespace
 {
     Vec sampleSquare()
@@ -10,14 +12,16 @@ namespace
 }
 
 Renderer::Renderer(std::shared_ptr<Camera> camera)
-	: m_camera(camera)
-{
+	: m_camera(camera), m_textureId(0)
+{}
 
-}
-
-void Renderer::render(const HittableScene& world)
+void Renderer::startRendering(const HittableScene& world)
 {
-    if (m_isImageRendered)
+    m_isImageRendered = false;
+    //m_renderingThread = std::thread([this, &world] { render(world); });
+
+    std::clog << "Rendering started!" << std::endl;
+    if (isImageRendered())
         return;
 
     std::shared_ptr<Image> image = getImage();
@@ -25,65 +29,90 @@ void Renderer::render(const HittableScene& world)
         return;
 
     // Image
-    int32 image_width = image->width();
-    int32 image_height = image->height();
+    int32 imageHeight = image->height();
 
     // Render
-    for (int32 i = 0; i < image_height; i++)
-    {
-        std::clog << "\rScanlines remaining: " << (image_height - i) << ' ' << std::flush;
-        for (int32 j = 0; j < image_width; j++)
-        {
-            const Color& pixelColor = calculateFinalColorAt(world, i, j);
-            image->setColorAt(i, j, pixelColor);
-        }
-    }
-    std::clog << "\rDone.                 \n";
+    initializeTexture();
 
+    std::vector<std::thread> renderingThreads;
+    renderingThreads.reserve(imageHeight);
+    for (int32 i = 0; i < imageHeight; ++i)
+    {
+        std::clog << "\rScanlines remaining: " << (imageHeight - i) << ' ' << std::flush;
+        renderingThreads.emplace_back(&Renderer::renderRow, this, std::cref(world), i);
+    }
+
+    // Join all threads after creation
+    for (std::thread& thread : renderingThreads)
+    {
+        if (thread.joinable())
+            thread.join();
+    }
+
+    for (int i = 0; i < imageHeight; ++i)
+        updateTextureRow(i);
+
+    std::clog << "\nRendering finished!" << std::endl;
     m_isImageRendered = true;
 }
 
-GLuint Renderer::createTextureFromImage() const
+void Renderer::stopRendering()
 {
-    if (!isImageRendered())
-        return GLuint();
+    m_textureId = 0;
+}
 
+void Renderer::initializeTexture()
+{
     const int32 imageWidth = getImage()->width();
     const int32 imageHeight = getImage()->height();
 
-    // Resize and fill renderTexture with pixel data
-    std::vector<uint8_t> renderTexture;
-    renderTexture.resize(4 * imageWidth * imageHeight);
+    // Generate and bind the texture
+    glGenTextures(1, &m_textureId);
+    glBindTexture(GL_TEXTURE_2D, m_textureId);
 
-    for (int32 x = 0; x < imageHeight; ++x) {
-        for (int32 y = 0; y < imageWidth; ++y) {
-            const Color& c = getImage()->getColorAt(x, y);
-            renderTexture[(x * imageWidth + y) * 4 + 0] = uint8_t(std::fabs(c[0] * 255));
-            renderTexture[(x * imageWidth + y) * 4 + 1] = uint8_t(std::fabs(c[1] * 255));
-            renderTexture[(x * imageWidth + y) * 4 + 2] = uint8_t(std::fabs(c[2] * 255));
-            renderTexture[(x * imageWidth + y) * 4 + 3] = 255;
-        }
-    }
-
-    // Generate and bind texture
-    unsigned textureID;
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_2D, textureID);
+    // Allocate empty texture memory
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageWidth, imageHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    //glGenerateMipmap(GL_TEXTURE_2D);
 
     // Set texture parameters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+}
 
-    // Upload texture data with correct type
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageWidth, imageHeight,
-        0, GL_RGBA, GL_UNSIGNED_BYTE, renderTexture.data());
+void Renderer::renderRow(const HittableScene& world, int32 rowIndex)
+{
+    if (m_stopRendering)
+        return;
 
-	// Unbind texture
-    glBindTexture(GL_TEXTURE_2D, 0);
+    for (int32 j = 0; j < getImage()->width(); j++)
+    {
+        const Color& pixelColor = calculateFinalColorAt(world, rowIndex, j);
+        getImage()->setColorAt(rowIndex, j, pixelColor);
+    }
+}
 
-    return textureID;
+void Renderer::updateTextureRow(int32 rowIndex)
+{
+    const int32 imageWidth = getImage()->width();
+    std::vector<uint8_t> rowTextureData(imageWidth * 4);
+
+    for (int32 x = 0; x < imageWidth; ++x) {
+        const Color& c = getImage()->getColorAt(rowIndex, x);
+
+        rowTextureData[x * 4 + 0] = uint8_t(std::fabs(c[0] * 255));
+        rowTextureData[x * 4 + 1] = uint8_t(std::fabs(c[1] * 255));
+        rowTextureData[x * 4 + 2] = uint8_t(std::fabs(c[2] * 255));
+        rowTextureData[x * 4 + 3] = 255;
+    }
+
+    // Bind the texture to update it
+    glBindTexture(GL_TEXTURE_2D, m_textureId);
+
+    // Upload texture row data
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, rowIndex, imageWidth, 1,
+        GL_RGBA, GL_UNSIGNED_BYTE, rowTextureData.data());
 }
 
 const Color& Renderer::calculateFinalColorAt(const HittableScene& world, int i, int j, bool gammaCorrect)
