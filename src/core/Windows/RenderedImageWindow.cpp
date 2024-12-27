@@ -90,7 +90,8 @@ namespace
 RenderedImageWindow::RenderedImageWindow()
 {
     m_image = std::make_shared<Image>(RENDERED_IMAGE_HEIGHT);
-    m_camera = std::make_shared<Camera>(m_image, Point3d(13, 2, 3), Point3d(0, 0, 0), 20);
+    m_camera = std::make_shared<Camera>(m_image, DEFAULT_CAMERA_LOOK_FROM, 
+        DEFAULT_CAMERA_LOOK_AT, 20);
     m_renderer = std::make_shared<Renderer>(m_camera);
 }
 
