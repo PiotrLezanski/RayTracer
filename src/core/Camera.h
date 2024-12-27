@@ -49,10 +49,10 @@ public:
 	void setFieldOfView(double fieldOfView) { m_fieldOfView = fieldOfView; }
 
 	const Point3d& getLookFrom() const { return m_lookFrom; }
-	void setLookFrom(const Point3d&& lookFrom) { m_lookFrom = lookFrom; }
+	void setLookFrom(const Point3d& lookFrom) { m_lookFrom = lookFrom; }
 
 	const Point3d& getLookAt() const { return m_lookAt; }
-	void setLookAt(const Point3d&& lookAt) { m_lookAt = lookAt; }
+	void setLookAt(const Point3d& lookAt) { m_lookAt = lookAt; }
 
 	Vec getFrameRightVector() const { return m_frameRightVector; }
 	Vec getFrameUpVector() const { return m_frameUpVector; }
