@@ -11,19 +11,19 @@ namespace
     }
 }
 
-Renderer::Renderer(std::shared_ptr<Camera> camera)
-	: m_camera(camera), m_textureId(0)
+Renderer::Renderer(std::shared_ptr<Camera> camera, std::unique_ptr<HittableScene> world)
+	: m_camera(camera), m_world(std::move(world)), m_textureId(0)
 {}
 
-void Renderer::startRendering(const HittableScene& world)
+void Renderer::startRendering()
 {
-    m_isImageRendered = false;
-    //m_renderingThread = std::thread([this, &world] { render(world); });
-
-    std::clog << "Rendering started!" << std::endl;
     if (isImageRendered())
         return;
 
+    if (!m_world)
+        return;
+
+    std::clog << "Rendering started!" << std::endl;
     std::shared_ptr<Image> image = getImage();
     if (!image)
         return;
@@ -39,7 +39,7 @@ void Renderer::startRendering(const HittableScene& world)
     for (int32 i = 0; i < imageHeight; ++i)
     {
         std::clog << "\rScanlines remaining: " << (imageHeight - i) << ' ' << std::flush;
-        renderingThreads.emplace_back(&Renderer::renderRow, this, std::cref(world), i);
+        renderingThreads.emplace_back(&Renderer::renderRow, this, i);
     }
 
     // Join all threads after creation
@@ -59,6 +59,13 @@ void Renderer::startRendering(const HittableScene& world)
 void Renderer::stopRendering()
 {
     m_textureId = 0;
+    m_isImageRendered = false;
+}
+
+void Renderer::rerender()
+{
+    stopRendering();
+    startRendering();
 }
 
 void Renderer::initializeTexture()
@@ -81,14 +88,20 @@ void Renderer::initializeTexture()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }
 
-void Renderer::renderRow(const HittableScene& world, int32 rowIndex)
+void Renderer::setSamplesPerPixel(int samplesPerPixel)
+{
+    m_samplesPerPixel = samplesPerPixel;
+    m_scale = 1.0 / m_samplesPerPixel;
+}
+
+void Renderer::renderRow(int32 rowIndex)
 {
     if (m_stopRendering)
         return;
 
     for (int32 j = 0; j < getImage()->width(); j++)
     {
-        const Color& pixelColor = calculateFinalColorAt(world, rowIndex, j);
+        const Color& pixelColor = calculateFinalColorAt(rowIndex, j);
         getImage()->setColorAt(rowIndex, j, pixelColor);
     }
 }
@@ -115,7 +128,7 @@ void Renderer::updateTextureRow(int32 rowIndex)
         GL_RGBA, GL_UNSIGNED_BYTE, rowTextureData.data());
 }
 
-const Color& Renderer::calculateFinalColorAt(const HittableScene& world, int i, int j, bool gammaCorrect)
+const Color& Renderer::calculateFinalColorAt(int i, int j, bool gammaCorrect)
 {
     Color finalColor(0, 0, 0);
 	std::shared_ptr<Viewport> viewport = getCamera()->getViewport();
@@ -131,7 +144,7 @@ const Color& Renderer::calculateFinalColorAt(const HittableScene& world, int i, 
         const Vec& rayDirection = pixelCenter - cameraCenter;
         const Ray ray(cameraCenter, rayDirection);
 
-        finalColor += ray.calculateColor(world, m_maxRayRecursionDepth);
+        finalColor += ray.calculateColor(*m_world, m_maxRayRecursionDepth);
     }
 
     // Pixel color is divided, because of antialiasing.

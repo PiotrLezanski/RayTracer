@@ -13,5 +13,5 @@ public:
 	void buildUI();
 
 private:
-	std::vector<std::unique_ptr<IWindow>> m_windows;
+	std::vector<std::shared_ptr<IWindow>> m_windows;
 };

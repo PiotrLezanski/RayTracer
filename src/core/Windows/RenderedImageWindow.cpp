@@ -90,21 +90,20 @@ namespace
 RenderedImageWindow::RenderedImageWindow()
 {
     m_image = std::make_shared<Image>(RENDERED_IMAGE_HEIGHT);
-    m_camera = std::make_shared<Camera>(m_image, DEFAULT_CAMERA_LOOK_FROM, 
-        DEFAULT_CAMERA_LOOK_AT, 20);
-    m_renderer = std::make_shared<Renderer>(m_camera);
+    m_camera = std::make_shared<Camera>(m_image);
+
+    // Create Scene to be rendered
+    // Scene consist of Hittable objects
+    auto world = std::make_unique<HittableScene>(std::move(createMainScene()));
+    m_renderer = std::make_shared<Renderer>(m_camera, std::move(world));
 }
 
 void RenderedImageWindow::init()
 {
     if (!m_renderer->isImageRendered())
     {
-        // Create Scene to be rendered
-        // Scene consist of Hittable objects
-        HittableScene world = std::move(createMainScene());
-
         // Rendered image can be retrieved from renderer
-        m_renderer->startRendering(world);
+        m_renderer->startRendering();
     }
 
 	// UI will be built here

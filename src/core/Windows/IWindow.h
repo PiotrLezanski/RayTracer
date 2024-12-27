@@ -8,7 +8,7 @@
 class IWindow
 {
 public:
-	// General initialization of Window contents
+	// Initialization of Window contents
 	virtual void init() = 0;
 
 	virtual ~IWindow() = default;

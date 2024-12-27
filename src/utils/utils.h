@@ -22,9 +22,13 @@ const inline Color DEFAULT_COLOR = Color(0, 0, 0);
 const double INF = std::numeric_limits<double>::infinity();
 const double PI = 3.1415926535897932385;
 
+// Renderer constants
+const int DEFAULT_SAMPLES_PER_PIXEL = 10;
+const int DEFAULT_MAX_RECURSION_DEPTH = 10;
+
 // Camera view contants
 const int32 RENDERED_IMAGE_HEIGHT = 256;
-const double DEFAULT_FIELD_OF_VIEW = 90;
+const double DEFAULT_FIELD_OF_VIEW = 20;
 const Point3d DEFAULT_CAMERA_LOOK_FROM = Point3d(13, 2, 3);
 const Point3d DEFAULT_CAMERA_LOOK_AT = Point3d(0, 0, 0);
 

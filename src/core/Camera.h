@@ -37,16 +37,22 @@ private:
 class Camera
 {
 public:
-	Camera(std::shared_ptr<Image> image, Point3d lookFrom, Point3d lookAt, double fieldOfView = DEFAULT_FIELD_OF_VIEW);
+	Camera(std::shared_ptr<Image> image, Point3d lookFrom = DEFAULT_CAMERA_LOOK_FROM, 
+		Point3d lookAt = DEFAULT_CAMERA_LOOK_AT, double fieldOfView = DEFAULT_FIELD_OF_VIEW);
 
 	std::shared_ptr<Image> getImage() const { return m_image; }
 	std::shared_ptr<Viewport> getViewport() const { return m_viewport; }
 	Point3d getCameraCenter() const { return m_cameraCenter; }
 	double getFocalLength() const { return m_focalLength; }
-	double getFieldOfView() const { return m_fieldOfView; }
 
-	Point3d getLookFrom() const { return m_lookFrom; }
-	Point3d getLookAt() const { return m_lookAt; }
+	double getFieldOfView() const { return m_fieldOfView; }
+	void setFieldOfView(double fieldOfView) { m_fieldOfView = fieldOfView; }
+
+	const Point3d& getLookFrom() const { return m_lookFrom; }
+	void setLookFrom(const Point3d&& lookFrom) { m_lookFrom = lookFrom; }
+
+	const Point3d& getLookAt() const { return m_lookAt; }
+	void setLookAt(const Point3d&& lookAt) { m_lookAt = lookAt; }
 
 	Vec getFrameRightVector() const { return m_frameRightVector; }
 	Vec getFrameUpVector() const { return m_frameUpVector; }

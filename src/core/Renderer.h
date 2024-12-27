@@ -13,26 +13,31 @@
 class Renderer
 {
 public:
-	explicit Renderer(std::shared_ptr<Camera> camera);
+	Renderer(std::shared_ptr<Camera> camera, std::unique_ptr<HittableScene> world = nullptr);
 
 	// Main method to render
-	void startRendering(const HittableScene& world);
-
+	void startRendering();
 	void stopRendering();
+	void rerender();
 
 	const auto getTextureId() const { return m_textureId; }
 	std::shared_ptr<Camera> getCamera() const { return m_camera; }
 	std::shared_ptr<Image> getImage() const { return getCamera()->getImage(); }
 	bool isImageRendered() const { return m_isImageRendered; }
-	std::thread& getRenderingThread() { return m_renderingThread; }
+
+	int getSamplesPerPixel() const { return m_samplesPerPixel; }
+	void setSamplesPerPixel(int samplesPerPixel);
+
+	int getMaxRayRecursionDepth() const { return m_maxRayRecursionDepth; }
+	void setMaxRayRecursionDepth(int maxRayRecursionDepth) { m_maxRayRecursionDepth = maxRayRecursionDepth; }
 
 private:
-	void renderRow(const HittableScene& world, int32 rowIndex);
+	void renderRow(int32 rowIndex);
 
 	// Return final color of given pixel
 	// Antialiasing is part of this process
 	// By default color will be gamma-corrected.
-	const Color& calculateFinalColorAt(const HittableScene& world, int i, int j, bool gammaCorrect = true);
+	const Color& calculateFinalColorAt(int i, int j, bool gammaCorrect = true);
 
 	void initializeTexture();
 
@@ -44,18 +49,19 @@ private:
 
 private:
 	std::shared_ptr<Camera> m_camera;
+	// Scene to be rendered
+	std::unique_ptr<HittableScene> m_world;
 
 	// Count of random samples for each pixel
 	// Used for antialiasing
-	const int m_samplesPerPixel = 10;
-	const double m_scale = 1.0 / m_samplesPerPixel;
+	int m_samplesPerPixel = DEFAULT_SAMPLES_PER_PIXEL;
+	double m_scale = 1.0 / m_samplesPerPixel;
 
 	// Maximum number of ray bounces into scene
-	int m_maxRayRecursionDepth = 10;
+	int m_maxRayRecursionDepth = DEFAULT_MAX_RECURSION_DEPTH;
 
 	bool m_isImageRendered = false;
 	// Id of the texture made of the rendered image
 	GLuint m_textureId = 0;
-	std::thread m_renderingThread;
 	bool m_stopRendering = false;
 };

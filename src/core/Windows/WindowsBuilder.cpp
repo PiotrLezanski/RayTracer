@@ -7,8 +7,12 @@
 WindowsBuilder::WindowsBuilder()
 {
 	// List of windows
-	m_windows.emplace_back(std::make_unique<RenderedImageWindow>());
-	m_windows.emplace_back(std::make_unique<ControlsWindow>());
+	auto renderedImageWindow = std::make_shared<RenderedImageWindow>();
+	// ControlsWindow needs RenderedImageWindow because it can influence it
+	auto controlsWindow = std::make_shared<ControlsWindow>(renderedImageWindow);
+
+	m_windows.emplace_back(renderedImageWindow);
+	m_windows.emplace_back(controlsWindow);
 }
 
 void WindowsBuilder::buildUI()

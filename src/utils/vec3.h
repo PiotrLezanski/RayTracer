@@ -24,6 +24,10 @@ public:
 	[[nodiscard]] T operator[](int i) const { return m_data[i]; }
 	T& operator[](int i) { return m_data[i]; }
 
+    [[nodiscard]] std::array<float, 3> asFloatArray() const { 
+        return { (float)m_data[0], (float)m_data[1], (float)m_data[2] }; 
+    }
+
     Vec3<T>& operator+=(const Vec3<T>& other)
 	{
         m_data[0] += other.x(); m_data[1] += other.y(); m_data[2] += other.z();
