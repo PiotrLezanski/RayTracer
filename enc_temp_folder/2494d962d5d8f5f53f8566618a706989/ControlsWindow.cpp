@@ -17,7 +17,6 @@ void ControlsWindow::initImGuiFrame()
     if (showCameraWindow)
     {
         std::shared_ptr<Renderer> renderer = getRenderedImageWindow()->getRenderer();
-        std::shared_ptr<Camera> camera = renderer->getCamera();
 
         ImGui::Begin("Camera Settings", &showCameraWindow);
 
@@ -49,9 +48,9 @@ void ControlsWindow::initImGuiFrame()
         if (ImGui::Button("Refresh Image"))
         {
             // If "Refresh Image" is pressed, update camera and renderer settings
-            camera->setLookFrom(cameraLookFrom);
-            camera->setLookAt(cameraLookAt);
-            camera->setFieldOfView(fieldOfView);
+            renderer->getCamera()->setLookFrom(cameraLookFrom);
+            renderer->getCamera()->setLookAt(cameraLookAt);
+            renderer->getCamera()->setFieldOfView(fieldOfView);
             renderer->setSamplesPerPixel(samplesPerPixel);
             renderer->setMaxRayRecursionDepth(maxRayRecursionDepth);
 
