@@ -24,12 +24,19 @@ void ControlsWindow::initImGuiFrame()
         // Camera position
         ImGui::Text("Camera Position:");
         Point3d& cameraLookFrom = getImageSettings()->cameraLookFrom;
-        ImGui::InputFloat3("(x, y, z)", cameraLookFrom.asFloatArray().data());
+
+        // Separate entries for each coordinate,
+        // as ImGui does not support it natively
+        ImGui::InputDouble("X", &cameraLookFrom.x());
+        ImGui::InputDouble("Y", &cameraLookFrom.y());
+        ImGui::InputDouble("Z", &cameraLookFrom.z());
 
         // Camera target
         ImGui::Text("Camera Target:");
         Point3d& cameraLookAt = getImageSettings()->cameraLookAt;
-        ImGui::InputFloat3("(x, y, z)", cameraLookAt.asFloatArray().data());
+        ImGui::InputDouble("X", &cameraLookAt.x());
+        ImGui::InputDouble("Y", &cameraLookAt.y());
+        ImGui::InputDouble("Z", &cameraLookAt.z());
 
         // Field of view slider
         ImGui::Text("Field of View (degrees):");
@@ -48,15 +55,38 @@ void ControlsWindow::initImGuiFrame()
 
         if (ImGui::Button("Refresh Image"))
         {
-            // If "Refresh Image" is pressed, update camera and renderer settings
-            camera->setLookFrom(cameraLookFrom);
-            camera->setLookAt(cameraLookAt);
-            camera->setFieldOfView(fieldOfView);
-            renderer->setSamplesPerPixel(samplesPerPixel);
-            renderer->setMaxRayRecursionDepth(maxRayRecursionDepth);
+            bool rerender = false;
 
-            // Then rerender
-            getRenderedImageWindow()->getRenderer()->rerender();
+            // If "Refresh Image" is pressed, update camera and renderer settings
+            // only if at least one of the parameters changed
+            if (camera->getLookFrom() != cameraLookFrom)
+            {
+                camera->setLookFrom(cameraLookFrom);
+                rerender = true;
+            }
+            if (camera->getLookAt() != cameraLookAt)
+            {
+                camera->setLookFrom(cameraLookAt);
+                rerender = true;
+            }
+            if (camera->getFieldOfView() != fieldOfView)
+            {
+                camera->setFieldOfView(fieldOfView);
+                rerender = true;
+            }
+            if (renderer->getSamplesPerPixel() != samplesPerPixel)
+            {
+                renderer->setSamplesPerPixel(samplesPerPixel);
+                rerender = true;
+            }
+            if (renderer->getMaxRayRecursionDepth() != maxRayRecursionDepth)
+            {
+                renderer->setMaxRayRecursionDepth(maxRayRecursionDepth);
+                rerender = true;
+            }
+
+            if (rerender)
+                getRenderedImageWindow()->getRenderer()->rerender();
         }
 
         if (ImGui::Button("Close"))

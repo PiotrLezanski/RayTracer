@@ -16,6 +16,10 @@ public:
 	[[nodiscard]] T y() const { return m_data[1]; }
 	[[nodiscard]] T z() const { return m_data[2]; }
 
+    T& x() { return m_data[0]; }
+    T& y() { return m_data[1]; }
+    T& z() { return m_data[2]; }
+
 	[[nodiscard]] double cords_squared() const { return x() * x() + y() * y() + z() * z(); }
 	[[nodiscard]] double length() const { return std::sqrt(cords_squared()); }
     [[nodiscard]] bool isCloseToZero() const;
@@ -24,9 +28,7 @@ public:
 	[[nodiscard]] T operator[](int i) const { return m_data[i]; }
 	T& operator[](int i) { return m_data[i]; }
 
-    [[nodiscard]] std::array<float, 3> asFloatArray() const { 
-        return { (float)m_data[0], (float)m_data[1], (float)m_data[2] }; 
-    }
+    T* data() const { return m_data.data(); }
 
     Vec3<T>& operator+=(const Vec3<T>& other)
 	{
@@ -44,6 +46,18 @@ public:
     {
         m_data[0] /= operand; m_data[1] /= operand; m_data[2] /= operand;
         return *this;
+    }
+
+    bool operator==(const Vec3<T>& other) const
+    {
+        return m_data[0] == other.x() &&
+            m_data[1] == other.y() &&
+            m_data[2] == other.z();
+    }
+
+    bool operator!=(const Vec3<T>& other) const
+    {
+        return !(*this == other);
     }
 
     template<Arithmetic T>
