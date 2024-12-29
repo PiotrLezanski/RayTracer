@@ -4,6 +4,7 @@
 #include "../utils/utils.h"
 #include "Camera.h"
 #include "../utils/Ray.h"
+#include "../utils/RenderedImageSettings.h"
 #include "../Scene/HittableScene.h"
 
 #include <iostream>
@@ -19,6 +20,13 @@ public:
 	void startRendering();
 	void stopRendering();
 	void rerender();
+
+	// This method will override current renderer and camera settings
+	// based on values set in "settings"
+	// It returns "true" if at least one value was overriden
+	bool overrideSetting(const RenderedImageSettings& settings);
+
+	RenderedImageSettings getImageSettings() const;
 
 	const auto getTextureId() const { return m_textureId; }
 	std::shared_ptr<Camera> getCamera() const { return m_camera; }

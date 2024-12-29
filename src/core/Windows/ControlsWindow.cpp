@@ -55,37 +55,7 @@ void ControlsWindow::initImGuiFrame()
 
         if (ImGui::Button("Refresh Image"))
         {
-            bool rerender = false;
-
-            // If "Refresh Image" is pressed, update camera and renderer settings
-            // only if at least one of the parameters changed
-            if (camera->getLookFrom() != cameraLookFrom)
-            {
-                camera->setLookFrom(cameraLookFrom);
-                rerender = true;
-            }
-            if (camera->getLookAt() != cameraLookAt)
-            {
-                camera->setLookFrom(cameraLookAt);
-                rerender = true;
-            }
-            if (camera->getFieldOfView() != fieldOfView)
-            {
-                camera->setFieldOfView(fieldOfView);
-                rerender = true;
-            }
-            if (renderer->getSamplesPerPixel() != samplesPerPixel)
-            {
-                renderer->setSamplesPerPixel(samplesPerPixel);
-                rerender = true;
-            }
-            if (renderer->getMaxRayRecursionDepth() != maxRayRecursionDepth)
-            {
-                renderer->setMaxRayRecursionDepth(maxRayRecursionDepth);
-                rerender = true;
-            }
-
-            if (rerender)
+            if (renderer->overrideSetting(*getImageSettings()))
                 getRenderedImageWindow()->getRenderer()->rerender();
         }
 

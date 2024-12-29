@@ -68,6 +68,54 @@ void Renderer::rerender()
     startRendering();
 }
 
+bool Renderer::overrideSetting(const RenderedImageSettings& settings)
+{
+    bool sthOverriden = false;
+
+    if (getCamera()->getLookFrom() != settings.cameraLookFrom)
+    {
+        sthOverriden = true;
+        getCamera()->setLookFrom(settings.cameraLookFrom);
+    }
+    
+    if (getCamera()->getLookAt() != settings.cameraLookAt)
+    {
+        sthOverriden = true;
+        getCamera()->setLookAt(settings.cameraLookAt);
+    }
+    
+    if (getCamera()->getFieldOfView() != settings.fieldOfView)
+    {
+        sthOverriden = true;
+        getCamera()->setFieldOfView(settings.fieldOfView);
+    }
+    
+    if (getSamplesPerPixel() != settings.samplesPerPixel)
+    {
+        sthOverriden = true;
+        setSamplesPerPixel(settings.samplesPerPixel);
+    }
+
+    if (getMaxRayRecursionDepth() != settings.maxRecursionDepth)
+    {
+        sthOverriden = true;
+        setMaxRayRecursionDepth(settings.maxRecursionDepth);
+    }
+
+    return sthOverriden;
+}
+
+RenderedImageSettings Renderer::getImageSettings() const
+{
+    RenderedImageSettings settings;
+    settings.cameraLookFrom = getCamera()->getLookFrom();
+    settings.cameraLookAt = getCamera()->getLookAt();
+    settings.fieldOfView = getCamera()->getFieldOfView();
+    settings.samplesPerPixel = getSamplesPerPixel();
+    settings.maxRecursionDepth = getMaxRayRecursionDepth();
+    return settings;
+}
+
 void Renderer::initializeTexture()
 {
     const int32 imageWidth = getImage()->width();
