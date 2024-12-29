@@ -68,41 +68,41 @@ void Renderer::rerender()
     startRendering();
 }
 
-bool Renderer::overrideSetting(const RenderedImageSettings& settings)
+RegenerationType Renderer::overrideSetting(const RenderedImageSettings& settings)
 {
-    bool sthOverriden = false;
+    unsigned int regenType = RegenerationType::RegenerateNone;
 
     if (getCamera()->getLookFrom() != settings.cameraLookFrom)
     {
-        sthOverriden = true;
+        regenType |= RegenerationType::RegenerateAll;
         getCamera()->setLookFrom(settings.cameraLookFrom);
     }
     
     if (getCamera()->getLookAt() != settings.cameraLookAt)
     {
-        sthOverriden = true;
+        regenType |= RegenerationType::RegenerateAll;
         getCamera()->setLookAt(settings.cameraLookAt);
     }
     
     if (getCamera()->getFieldOfView() != settings.fieldOfView)
     {
-        sthOverriden = true;
+        regenType |= RegenerationType::RegenerateAll;
         getCamera()->setFieldOfView(settings.fieldOfView);
     }
     
     if (getSamplesPerPixel() != settings.samplesPerPixel)
     {
-        sthOverriden = true;
+        regenType |= RegenerationType::RegenerateRenderer;
         setSamplesPerPixel(settings.samplesPerPixel);
     }
 
     if (getMaxRayRecursionDepth() != settings.maxRecursionDepth)
     {
-        sthOverriden = true;
+        regenType |= RegenerationType::RegenerateRenderer;
         setMaxRayRecursionDepth(settings.maxRecursionDepth);
     }
 
-    return sthOverriden;
+    return static_cast<RegenerationType>(regenType);
 }
 
 RenderedImageSettings Renderer::getImageSettings() const

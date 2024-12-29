@@ -27,16 +27,20 @@ void ControlsWindow::initImGuiFrame()
 
         // Separate entries for each coordinate,
         // as ImGui does not support it natively
+        ImGui::PushID("CameraPosition");
         ImGui::InputDouble("X", &cameraLookFrom.x());
         ImGui::InputDouble("Y", &cameraLookFrom.y());
         ImGui::InputDouble("Z", &cameraLookFrom.z());
+        ImGui::PopID();
 
         // Camera target
         ImGui::Text("Camera Target:");
         Point3d& cameraLookAt = getImageSettings()->cameraLookAt;
+        ImGui::PushID("CameraTarget");
         ImGui::InputDouble("X", &cameraLookAt.x());
         ImGui::InputDouble("Y", &cameraLookAt.y());
         ImGui::InputDouble("Z", &cameraLookAt.z());
+        ImGui::PopID();
 
         // Field of view slider
         ImGui::Text("Field of View (degrees):");
@@ -53,10 +57,23 @@ void ControlsWindow::initImGuiFrame()
         int& maxRayRecursionDepth = getImageSettings()->maxRecursionDepth;
         ImGui::InputInt("Recursion Depth", &maxRayRecursionDepth);
 
+        if (ImGui::Button("Reset To Previous"))
+        {
+            
+        }
+
         if (ImGui::Button("Refresh Image"))
         {
-            if (renderer->overrideSetting(*getImageSettings()))
+            RegenerationType regenerationType = renderer->overrideSetting(*getImageSettings());
+            if (regenerationType == RegenerationType::RegenerateRenderer)
+            {
                 getRenderedImageWindow()->getRenderer()->rerender();
+            }
+            else if (regenerationType == RegenerationType::RegenerateAll)
+            {
+                getRenderedImageWindow()->getCamera()->regenerate();
+                getRenderedImageWindow()->getRenderer()->rerender();
+            }
         }
 
         if (ImGui::Button("Close"))

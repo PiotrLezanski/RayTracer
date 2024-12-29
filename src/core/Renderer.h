@@ -11,6 +11,18 @@
 #include <thread>
 #include <mutex>
 
+// It returns enum telling what needs to be regenerated.
+// The rules are:
+//	- do not regenerate if nothing changed
+//  - regenerate renderer if only it's parameters changed
+//  - regenerate all if camera settings changed, or both camera and renderer
+enum RegenerationType : unsigned int
+{
+	RegenerateNone = 0,
+	RegenerateRenderer,
+	RegenerateAll
+};
+
 class Renderer
 {
 public:
@@ -21,10 +33,9 @@ public:
 	void stopRendering();
 	void rerender();
 
-	// This method will override current renderer and camera settings
-	// based on values set in "settings"
-	// It returns "true" if at least one value was overriden
-	bool overrideSetting(const RenderedImageSettings& settings);
+	// This method will try to override current renderer and camera settings
+	// based on values set in "settings", only if given value is new.
+	RegenerationType overrideSetting(const RenderedImageSettings& settings);
 
 	RenderedImageSettings getImageSettings() const;
 

@@ -40,6 +40,11 @@ public:
 	Camera(std::shared_ptr<Image> image, Point3d lookFrom = DEFAULT_CAMERA_LOOK_FROM, 
 		Point3d lookAt = DEFAULT_CAMERA_LOOK_AT, double fieldOfView = DEFAULT_FIELD_OF_VIEW);
 
+	// Method to regenerate whole camera.
+	// It is used when user changes parameters in ControlsWindow,
+	// and thus camera needs to be recalculated.
+	void regenerate();
+
 	std::shared_ptr<Image> getImage() const { return m_image; }
 	std::shared_ptr<Viewport> getViewport() const { return m_viewport; }
 	Point3d getCameraCenter() const { return m_cameraCenter; }
@@ -57,6 +62,9 @@ public:
 	Vec getFrameRightVector() const { return m_frameRightVector; }
 	Vec getFrameUpVector() const { return m_frameUpVector; }
 	Vec getOppositeViewDirectionVector() const { return m_oppositeViewDirection; }
+
+private:
+	void initialize();
 
 private:
 	std::shared_ptr<Image> m_image;

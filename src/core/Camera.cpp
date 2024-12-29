@@ -34,6 +34,16 @@ Camera::Camera(std::shared_ptr<Image> image, Point3d lookFrom,
 	: m_image(image), m_lookFrom(lookFrom), 
 		m_lookAt(lookAt), m_fieldOfView(fieldOfView)
 {
+	initialize();
+}
+
+void Camera::regenerate()
+{
+	initialize();
+}
+
+void Camera::initialize()
+{
 	m_cameraCenter = m_lookFrom;
 	m_focalLength = (m_lookFrom - m_lookAt).length();
 
