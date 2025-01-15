@@ -11,39 +11,30 @@ namespace
 	HittableScene createMainScene()
 	{
         HittableScene world;
-        auto ground_material = std::make_shared<Lambertian>(Color(0.5, 0.5, 0.5));
+
+        // Ground with a new color
+        auto ground_material = std::make_shared<Lambertian>(Color(0.3, 0.4, 0.6));
         world.add(std::make_shared<Sphere>(Point3d(0, -1000, 0), 1000, ground_material));
 
-        //for (int a = -11; a < 11; a++) {
-        //    for (int b = -11; b < 11; b++) {
-        //        auto choose_mat = randomDouble();
-        //        Point3d center(a + 0.9 * randomDouble(), 0.2, b + 0.9 * randomDouble());
+        // Function to add a planet with an optional ring
+        auto addPlanetWithRing = [&](Point3d center, double radius, std::shared_ptr<Material> material, bool add_ring, Color ring_color) {
+            // Planet
+            world.add(std::make_shared<Sphere>(center, radius, material));
 
-        //        if ((center - Point3d(4, 0.2, 0)).length() > 0.9) {
-        //            std::shared_ptr<Material> sphere_material;
+            // Optional ring
+            if (add_ring) {
+                int ring_count = 20;
+                double ring_radius = radius + 0.5;
+                for (int i = 0; i < ring_count; i++) {
+                    double angle = 2.0 * PI * i / ring_count;
+                    Point3d ring_center = center + Point3d(ring_radius * cos(angle), 0.0, ring_radius * sin(angle));
+                    auto ring_material = std::make_shared<Metal>(ring_color, 0.0);
+                    world.add(std::make_shared<Sphere>(ring_center, 0.1, ring_material));
+                }
+            }
+            };
 
-        //            if (choose_mat < 0.8) {
-        //                // diffuse
-        //                auto albedo = randomVector() * randomVector();
-        //                sphere_material = std::make_shared<Lambertian>(albedo);
-        //                world.add(std::make_shared<Sphere>(center, 0.2, sphere_material));
-        //            }
-        //            else if (choose_mat < 0.95) {
-        //                // metal
-        //                auto albedo = randomVector(0.5, 1);
-        //                auto fuzz = randomDouble(0, 0.5);
-        //                sphere_material = std::make_shared<Metal>(albedo, fuzz);
-        //                world.add(std::make_shared<Sphere>(center, 0.2, sphere_material));
-        //            }
-        //            else {
-        //                // glass
-        //                sphere_material = std::make_shared<Refractive>(1.5);
-        //                world.add(std::make_shared<Sphere>(center, 0.2, sphere_material));
-        //            }
-        //        }
-        //    }
-        //}
-
+        // Small random spheres
         for (int a = -5; a < 5; a++) {
             for (int b = -5; b < 5; b++) {
                 auto choose_mat = randomDouble();
@@ -53,20 +44,20 @@ namespace
                     std::shared_ptr<Material> sphere_material;
 
                     if (choose_mat < 0.8) {
-                        // diffuse
+                        // Diffuse
                         auto albedo = randomVector() * randomVector();
                         sphere_material = std::make_shared<Lambertian>(albedo);
                         world.add(std::make_shared<Sphere>(center, 0.2, sphere_material));
                     }
                     else if (choose_mat < 0.95) {
-                        // metal
+                        // Metal
                         auto albedo = randomVector(0.5, 1);
                         auto fuzz = randomDouble(0, 0.5);
                         sphere_material = std::make_shared<Metal>(albedo, fuzz);
                         world.add(std::make_shared<Sphere>(center, 0.2, sphere_material));
                     }
                     else {
-                        // glass
+                        // Glass
                         sphere_material = std::make_shared<Refractive>(1.5);
                         world.add(std::make_shared<Sphere>(center, 0.2, sphere_material));
                     }
@@ -74,14 +65,19 @@ namespace
             }
         }
 
+        // Planets with rings
         auto material1 = std::make_shared<Refractive>(1.5);
-        world.add(std::make_shared<Sphere>(Point3d(0, 1, 0), 1.0, material1));
+        addPlanetWithRing(Point3d(0, 1, 0), 1.0, material1, true, Color(0.8, 0.6, 0.2));
 
         auto material2 = std::make_shared<Lambertian>(Color(0.4, 0.2, 0.1));
-        world.add(std::make_shared<Sphere>(Point3d(-4, 1, 0), 1.0, material2));
+        addPlanetWithRing(Point3d(-4, 1, 0), 1.0, material2, true, Color(0.5, 0.5, 0.5));
 
         auto material3 = std::make_shared<Metal>(Color(0.7, 0.6, 0.5), 0.0);
-        world.add(std::make_shared<Sphere>(Point3d(4, 1, 0), 1.0, material3));
+        addPlanetWithRing(Point3d(4, 1, 0), 1.0, material3, false, Color(0, 0, 0));
+
+        // Glass sphere
+        auto material4 = std::make_shared<Refractive>(1.5);
+        world.add(std::make_shared<Sphere>(Point3d(0, 2, 3), 0.5, material4));
 
         return world;
 	}

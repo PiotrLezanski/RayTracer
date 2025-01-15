@@ -60,7 +60,7 @@ void MainUI::setupImGuiContext()
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
-    (void)io;
+    io.FontGlobalScale = 2.0f;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
     glfwInit();
