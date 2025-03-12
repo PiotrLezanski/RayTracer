@@ -23,7 +23,6 @@ void Renderer::startRendering()
     if (!m_world)
         return;
 
-    std::clog << "Rendering started!" << std::endl;
     std::shared_ptr<Image> image = getImage();
     if (!image)
         return;
@@ -36,6 +35,11 @@ void Renderer::startRendering()
 
     std::vector<std::thread> renderingThreads;
     renderingThreads.reserve(imageHeight);
+
+    std::clog << "Rendering started!" << std::endl;
+
+    // start timer
+    const auto startTime = std::chrono::steady_clock::now();
     for (int32 i = 0; i < imageHeight; ++i)
     {
         std::clog << "\rScanlines remaining: " << (imageHeight - i) << ' ' << std::flush;
@@ -52,12 +56,17 @@ void Renderer::startRendering()
     for (int i = 0; i < imageHeight; ++i)
         updateTextureRow(i);
 
+    // stop timer
+    const auto endTime = std::chrono::steady_clock::now();
+	m_renderTime = static_cast<std::chrono::duration<double>>(endTime-startTime).count();
+
     std::clog << "\nRendering finished!" << std::endl;
     m_isImageRendered = true;
 }
 
 void Renderer::stopRendering()
 {
+    m_renderTime = 0;
     m_textureId = 0;
     m_isImageRendered = false;
 }

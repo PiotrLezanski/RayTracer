@@ -9,7 +9,7 @@
 
 #include <iostream>
 #include <thread>
-#include <mutex>
+#include <chrono>
 
 // It returns enum telling what needs to be regenerated.
 // The rules are:
@@ -22,6 +22,8 @@ enum RegenerationType : unsigned int
 	RegenerateRenderer,
 	RegenerateAll
 };
+
+using RenderTime = double;
 
 class Renderer
 {
@@ -49,6 +51,8 @@ public:
 
 	int getMaxRayRecursionDepth() const { return m_maxRayRecursionDepth; }
 	void setMaxRayRecursionDepth(int maxRayRecursionDepth) { m_maxRayRecursionDepth = maxRayRecursionDepth; }
+
+	RenderTime getRenderTime() const { return m_renderTime; }
 
 private:
 	void renderRow(int32 rowIndex);
@@ -83,4 +87,5 @@ private:
 	// Id of the texture made of the rendered image
 	GLuint m_textureId = 0;
 	bool m_stopRendering = false;
+	RenderTime m_renderTime = 0.0;
 };
