@@ -17,7 +17,7 @@ struct Interval
     double m_max;
 };
 
-void Interval::addPadding(double p)
+inline void Interval::addPadding(double p)
 {
     const double padding = p / 2;
     m_min -= padding;
