@@ -3,7 +3,7 @@
 #include "../../utils/Interval.h"
 #include "../../utils/Ray.h"
 
-// Axis-Aligned Bounding Box (AABB) class
+// Axis-Aligned Bounding Box (AABB) class.
 // Simple and efficient bounding volume used in spatial computations.
 // It's main purpose is for efficient ray-box intersection calculation for rendering acceleration.
 // They are fundamental in BVH structures.
@@ -14,6 +14,8 @@ public:
 	BoundingBox(const Interval& x, const Interval& y, const Interval& z);
 	// Create rectangular bounding box from two corner points
 	BoundingBox(const Point3d& p1, const Point3d& p2);
+	// Create bounding box that encloses boxes given as arguments
+	BoundingBox(std::shared_ptr<BoundingBox> a, std::shared_ptr<BoundingBox> b);
 
 	// 0 - x, 1 - y, 2<= - z
 	const Interval& getIntervalFromAxis(int axis) const;

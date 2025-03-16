@@ -11,6 +11,13 @@ BoundingBox::BoundingBox(const Point3d& p1, const Point3d& p2)
 	m_x = p1.z() < p2.z() ? Interval(p1.z(), p2.z()) : Interval(p2.z(), p1.z());
 }
 
+BoundingBox::BoundingBox(std::shared_ptr<BoundingBox> a, std::shared_ptr<BoundingBox> b)
+{
+	m_x = Interval(a->m_x, b->m_x);
+	m_y = Interval(a->m_y, b->m_y);
+	m_z = Interval(a->m_z, b->m_z);	
+}
+
 const Interval& BoundingBox::getIntervalFromAxis(int axis) const
 {
 	if (axis == 0) return m_x;

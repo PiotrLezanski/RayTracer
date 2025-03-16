@@ -2,6 +2,7 @@
 
 #include "../utils/Ray.h"
 #include "../utils/Interval.h"
+#include "../core/BVH/BoundingBox.h"
 
 class Material;
 
@@ -42,15 +43,19 @@ public:
 	Hittable() = default;
 	Hittable(std::shared_ptr<Material> material) : m_material(material) {}
 
-	virtual bool hit(const Ray& ray, Interval t_MinMax, HitRecord& hitRecord) const = 0;
 	virtual ~Hittable() = default;
 
+	virtual bool hit(const Ray& ray, Interval t_MinMax, HitRecord& hitRecord) const = 0;
+	
 	// return copy of the material
 	std::shared_ptr<Material> getMaterial() const { return m_material; }
-
 	void setMaterial(const std::shared_ptr<Material>& newMaterial) { m_material = newMaterial; }
+	
+	auto getBoundingBox() const { return m_bbox; }
 
-private:
+protected:
 	// Material of the Hittable object e.g. Sphere
 	std::shared_ptr<Material> m_material;
+
+	std::shared_ptr<BoundingBox> m_bbox;
 };
