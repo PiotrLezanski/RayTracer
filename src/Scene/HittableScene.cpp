@@ -1,6 +1,6 @@
 #include "HittableScene.h"
 
-void HittableScene::add(std::shared_ptr<Hittable> obj)
+void HittableScene::add(const std::shared_ptr<Hittable> obj)
 {
 	if (obj)
 	{

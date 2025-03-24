@@ -8,7 +8,7 @@ class HittableScene : public Hittable
 {
 public:
 	HittableScene() = default;
-	void add(std::shared_ptr<Hittable> obj);
+	void add(const std::shared_ptr<Hittable> obj);
 	const auto& getScene() const { return m_sceneVec; };
 
 	// Hit all objects in the m_sceneVec.

@@ -35,7 +35,8 @@ struct HitRecord
 	}
 };
 
-// Interface for objects that Ray can intersect with e.g. Sphere
+// Interface for objects that Ray can intersect with e.g. Sphere, BVH_Node
+// Every Hittable object has it's own bounding box
 class Hittable
 {
 public:
