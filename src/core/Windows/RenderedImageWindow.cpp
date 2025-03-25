@@ -3,6 +3,7 @@
 #include "../../Scene/HittableScene.h"
 #include "../../Scene/Shapes/Sphere.h"
 #include "../../Scene/Materials/AllMaterials.h"
+#include "../BVH/BVH_Node.h"
 
 #include <vector>
 
@@ -78,6 +79,8 @@ namespace
         // Glass sphere
         auto material4 = std::make_shared<Refractive>(1.5);
         world.add(std::make_shared<Sphere>(Point3d(0, 2, 3), 0.5, material4));
+
+        //world = HittableScene(std::make_shared<BVH_Node>(world));
 
         return world;
 	}
