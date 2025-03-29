@@ -5,7 +5,7 @@
 #include "Camera.h"
 #include "../utils/Ray.h"
 #include "../utils/RenderedImageSettings.h"
-#include "../Scene/HittableScene.h"
+#include "../Scene/Hittable/HittableScene.h"
 
 #include <iostream>
 #include <thread>
