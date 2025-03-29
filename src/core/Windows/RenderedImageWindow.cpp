@@ -1,6 +1,6 @@
 #include "RenderedImageWindow.h"
 
-#include "../../Scene/HittableScene.h"
+#include "../../Scene/Hittable/HittableScene.h"
 #include "../../Scene/Shapes/Sphere.h"
 #include "../../Scene/Materials/AllMaterials.h"
 #include "../BVH/BVH_Node.h"
@@ -80,7 +80,7 @@ namespace
         auto material4 = std::make_shared<Refractive>(1.5);
         world.add(std::make_shared<Sphere>(Point3d(0, 2, 3), 0.5, material4));
 
-        //world = HittableScene(std::make_shared<BVH_Node>(world));
+        //world = std::make_shared<BVH_Tree>(world);
 
         return world;
 	}
