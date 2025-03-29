@@ -1,7 +1,8 @@
 #pragma once
 
 #include "../../utils/Ray.h"
-#include "../Hittable.h"
+
+class HitRecord;
 
 // Base class of all materials in Ray Tracer
 class Material

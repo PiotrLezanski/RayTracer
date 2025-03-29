@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../Hittable.h"
+#include "../Hittable/HittableObject.h"
 #include "../../utils/Ray.h"
 
-class Sphere : public Hittable
+class Sphere : public HittableObject
 {
 public:
 	Sphere(Point3d center, double radius, std::shared_ptr<Material> material);

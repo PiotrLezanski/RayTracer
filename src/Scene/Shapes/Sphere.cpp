@@ -1,7 +1,7 @@
 #include "Sphere.h"
 
 Sphere::Sphere(Point3d center, double radius, std::shared_ptr<Material> material)
-	: Hittable(material), m_center(center), m_radius(std::fmax(0, radius))
+	: HittableObject(material), m_center(center), m_radius(std::fmax(0, radius))
 {
     const Vec circleBBox = Vec(radius, radius, radius);
     m_bbox = std::make_shared<BoundingBox>(center - circleBBox, center + circleBBox);
