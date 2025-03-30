@@ -1,4 +1,4 @@
-#include "BVH_Node.h"
+#include "BVH_Tree.h"
 
 #include <algorithm>
 

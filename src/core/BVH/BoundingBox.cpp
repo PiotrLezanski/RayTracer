@@ -8,7 +8,7 @@ BoundingBox::BoundingBox(const Point3d& p1, const Point3d& p2)
 {
 	m_x = p1.x() < p2.x() ? Interval(p1.x(), p2.x()) : Interval(p2.x(), p1.x());
 	m_y = p1.y() < p2.y() ? Interval(p1.y(), p2.y()) : Interval(p2.y(), p1.y());
-	m_x = p1.z() < p2.z() ? Interval(p1.z(), p2.z()) : Interval(p2.z(), p1.z());
+	m_z = p1.z() < p2.z() ? Interval(p1.z(), p2.z()) : Interval(p2.z(), p1.z());
 }
 
 BoundingBox::BoundingBox(std::shared_ptr<BoundingBox> a, std::shared_ptr<BoundingBox> b)

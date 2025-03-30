@@ -6,7 +6,7 @@
 class Material;
 
 // Interface for objects that Ray can intersect with e.g. Sphere, BVH_Node
-// Every Hittable object has it's own bounding box
+// Every HittableObject has it's own bounding box
 class HittableObject : public Hittable
 {
 public:
@@ -24,6 +24,5 @@ public:
 protected:
 	// Material of the Hittable object e.g. Sphere
 	std::shared_ptr<Material> m_material;
-
 	std::shared_ptr<BoundingBox> m_bbox = std::make_shared<BoundingBox>();
 };

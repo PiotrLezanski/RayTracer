@@ -3,13 +3,13 @@
 #include "../../Scene/Hittable/HittableScene.h"
 #include "../../Scene/Shapes/Sphere.h"
 #include "../../Scene/Materials/AllMaterials.h"
-#include "../BVH/BVH_Node.h"
+#include "../BVH/BVH_Tree.h"
 
 #include <vector>
 
 namespace
 {
-	HittableScene createMainScene()
+	HittableScene createComplexScene()
 	{
         HittableScene world;
 
@@ -80,7 +80,7 @@ namespace
         auto material4 = std::make_shared<Refractive>(1.5);
         world.add(std::make_shared<Sphere>(Point3d(0, 2, 3), 0.5, material4));
 
-        //world = std::make_shared<BVH_Tree>(world);
+        world = HittableScene(std::make_shared<BVH_Tree>(world.getScene()));
 
         return world;
 	}
@@ -93,7 +93,7 @@ RenderedImageWindow::RenderedImageWindow()
 
     // Create Scene to be rendered
     // Scene consist of Hittable objects
-    auto world = std::make_unique<HittableScene>(std::move(createMainScene()));
+    auto world = std::make_unique<HittableScene>(std::move(createComplexScene()));
     m_renderer = std::make_shared<Renderer>(m_camera, std::move(world));
 }
 

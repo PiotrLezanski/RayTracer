@@ -2,7 +2,7 @@
 
 #include "../../utils/Ray.h"
 
-class HitRecord;
+struct HitRecord;
 
 // Base class of all materials in Ray Tracer
 class Material

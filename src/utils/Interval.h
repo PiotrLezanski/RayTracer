@@ -21,7 +21,7 @@ struct Interval
 inline Interval::Interval(const Interval& a, const Interval& b)
 {
     m_min = std::min(a.m_min, b.m_min);
-    m_max = std::max(b.m_max, b.m_max);
+    m_max = std::max(a.m_max, b.m_max);
 }
 
 inline void Interval::addPadding(double p)
