@@ -1,5 +1,9 @@
 #include "BoundingBox.h"
 
+BoundingBox::BoundingBox()
+	: BoundingBox(EMPTY_INTERVAL, EMPTY_INTERVAL, EMPTY_INTERVAL)
+{}
+
 BoundingBox::BoundingBox(const Interval& x, const Interval& y, const Interval& z)
 	: m_x(x), m_y(y), m_z(z)
 {}
@@ -49,4 +53,18 @@ bool BoundingBox::hit(const Ray& r, Interval ray_t)
 			return false;
 	}
 	return true;
+}
+
+int BoundingBox::getLongestAxis() const
+{
+	const double sizeX = m_x.size();
+	const double sizeY = m_y.size();
+	const double sizeZ = m_z.size();
+
+	if (sizeX > sizeY && sizeX > sizeZ)
+		return 0;
+	if (sizeY > sizeZ)
+		return 1;
+	else
+		return 2;
 }

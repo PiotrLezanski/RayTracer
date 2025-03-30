@@ -12,6 +12,13 @@ std::shared_ptr<BVH_Node> BVH_Tree::buildBVHTree(HittableObjVec& objects, size_t
 {
 	std::shared_ptr<BVH_Node> root = std::make_shared<BVH_Node>();
 
+	std::shared_ptr<BoundingBox> bbox = std::make_shared<BoundingBox>();
+	for(size_t objIndex = start; objIndex < end; ++objIndex)
+	{
+		bbox = std::make_shared<BoundingBox>(bbox, objects[objIndex]->getBoundingBox());
+	}
+	root->setBoundingBox(bbox);
+
 	const size_t span = end - start;
 	if(span == 1)
 	{
@@ -27,7 +34,7 @@ std::shared_ptr<BVH_Node> BVH_Tree::buildBVHTree(HittableObjVec& objects, size_t
 	else
 	{
 		// If there are more objects, create another BVH containers (BVH_Node)
-		const int axis = randomInt(0, 2);
+		const int axis = bbox->getLongestAxis();
 		auto comparator =
 			[axis](const std::shared_ptr<HittableObject>& one, const std::shared_ptr<HittableObject> two) -> bool
 			{
@@ -42,10 +49,6 @@ std::shared_ptr<BVH_Node> BVH_Tree::buildBVHTree(HittableObjVec& objects, size_t
 		root->m_left = buildBVHTree(objects, start, mid);
 		root->m_right = buildBVHTree(objects, mid, end);
 	}
-
-	root->setBoundingBox(
-		std::make_shared<BoundingBox>(root->m_left->getBoundingBox(), root->m_right->getBoundingBox())
-	);
 
 	return root;
 }

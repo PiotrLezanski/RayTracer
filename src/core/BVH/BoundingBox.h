@@ -10,7 +10,7 @@
 class BoundingBox
 {
 public:
-	BoundingBox() {}
+	BoundingBox();
 	BoundingBox(const Interval& x, const Interval& y, const Interval& z);
 	// Create rectangular bounding box from two corner points
 	BoundingBox(const Point3d& p1, const Point3d& p2);
@@ -25,6 +25,8 @@ public:
 	// Slab method repeatedly cuts portions of the ray with regard to every axis.
 	// Ray intersects AABB if there is some segment left.
 	bool hit(const Ray& r, Interval ray_t);
+
+	[[nodiscard]] int getLongestAxis() const;
 
 private:
 	Interval m_x;
