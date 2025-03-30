@@ -1,53 +1,64 @@
 #include "BVH_Node.h"
 
-BVH_Node::BVH_Node(const HittableScene& scene)
+#include <algorithm>
+
+// BVH_Tree
+BVH_Tree::BVH_Tree(HittableObjVec& objects)
 {
-    HittableVec objects = scene.getScene();
-	createTree(objects, 0, objects.size());
+	m_root = buildBVHTree(objects, 0, objects.size());
 }
 
-void BVH_Node::createTree(HittableVec& objects, size_t start, size_t end)
+std::shared_ptr<BVH_Node> BVH_Tree::buildBVHTree(HittableObjVec& objects, size_t start, size_t end)
 {
-    const int axis = randomInt(0, 2);
-    const size_t object_span = end - start;
+	std::shared_ptr<BVH_Node> root = std::make_shared<BVH_Node>();
 
-    auto comparator =
-        [axis](const std::shared_ptr<Hittable>& one, const std::shared_ptr<Hittable> two) -> bool
-        {
-            const Interval oneInterval = one->getBoundingBox()->getIntervalFromAxis(axis);
-            const Interval twoInterval = two->getBoundingBox()->getIntervalFromAxis(axis);
-            return oneInterval.m_min < twoInterval.m_min;
-        };
+	const size_t span = end - start;
+	if(span == 1)
+	{
+		root->m_left = objects[start];
+		root->m_right = objects[start];
+	}
+	else if(span == 2)
+	{
+		// We assign Hittables, which could be e.g. Spheres as leaves in out BVH structure
+		root->m_left = objects[start];
+		root->m_right = objects[start+1];
+	}
+	else
+	{
+		// If there are more objects, create another BVH containers (BVH_Node)
+		const int axis = randomInt(0, 2);
+		auto comparator =
+			[axis](const std::shared_ptr<HittableObject>& one, const std::shared_ptr<HittableObject> two) -> bool
+			{
+				const Interval oneInterval = one->getBoundingBox()->getIntervalFromAxis(axis);
+				const Interval twoInterval = two->getBoundingBox()->getIntervalFromAxis(axis);
+				return oneInterval.m_min < twoInterval.m_min;
+			};
 
-    if (object_span == 1) 
-    {
-        m_left = objects[start];
-        m_right = objects[start];
-    }
-    else if (object_span == 2) 
-    {
-        m_left = objects[start];
-        m_right = objects[start+1];
-    }
-    else
-    {
-        auto left = std::make_shared<BVH_Node>();
-        auto right = std::make_shared<BVH_Node>();
+		std::sort(objects.begin() + start, objects.begin() + end, comparator);
 
-        std::sort(objects.begin() + start, objects.begin() + end, comparator);
+		size_t mid = start + span / 2;
+		root->m_left = buildBVHTree(objects, start, mid);
+		root->m_right = buildBVHTree(objects, mid, end);
+	}
 
-        const size_t mid = start + object_span / 2;
+	root->setBoundingBox(
+		std::make_shared<BoundingBox>(root->m_left->getBoundingBox(), root->m_right->getBoundingBox())
+	);
 
-        left->createTree(objects, start, mid);
-        right->createTree(objects, mid, end);
-
-        m_left = left;
-        m_right = right;
-    }
-
-    m_bbox = std::make_shared<BoundingBox>(m_left->getBoundingBox(), m_right->getBoundingBox());
+	return root;
 }
 
+bool BVH_Tree::hit(const Ray& ray, Interval t_MinMax, HitRecord& hitRecord) const
+{
+	if(m_root)
+		return m_root->hit(ray, t_MinMax, hitRecord);
+
+	return false;
+}
+
+// BVH_Node
 bool BVH_Node::hit(const Ray& ray, Interval ray_t, HitRecord& hitRecord) const
 {
 	if (!getBoundingBox()->hit(ray, ray_t))
@@ -60,14 +71,4 @@ bool BVH_Node::hit(const Ray& ray, Interval ray_t, HitRecord& hitRecord) const
 	const bool hitRight = m_right && m_right->hit(ray, ray_t, hitRecord);
 
 	return hitLeft || hitRight;
-}
-
-void BVH_Node::setLeft(std::shared_ptr<Hittable> left)
-{
-	m_left = left;
-}
-
-void BVH_Node::setRight(std::shared_ptr<Hittable> right)
-{
-	m_right = right;
 }
