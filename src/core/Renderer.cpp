@@ -199,6 +199,9 @@ const Color& Renderer::calculateFinalColorAt(int i, int j, bool gammaCorrect)
             (((double)i + randomVector.x()) * viewport->getUpDownDeltaVec()) +
             (((double)j + randomVector.y()) * viewport->getLeftRightDeltaVec());
 
+        // We create imageWidth * imageHeight * m_samplesPerPixel Rays that are hit into the scene.
+        // Every ray individually hits the Scene in Ray::calculateColor.
+        // In my BVH structure that means that every ray hits BVH_Tree root.
         const Vec& rayDirection = pixelCenter - cameraCenter;
         const Ray ray(cameraCenter, rayDirection);
 

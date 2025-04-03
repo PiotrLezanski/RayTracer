@@ -20,6 +20,9 @@ bool HittableScene::hit(const Ray& ray, Interval t_MinMax, HitRecord& hitRecord)
 	HitRecord tmpRecord;
 	bool isSthHit = false;
 	double closest_tmax = t_MinMax.m_max;
+
+	// In BVH structure there is just one element in the scene.
+	// This element is single BVH_Tree, so we just hit it's root here.
 	for (const auto& obj : getScene())
 	{
 		if (obj->hit(ray, Interval(t_MinMax.m_min, closest_tmax), tmpRecord))
