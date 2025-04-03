@@ -80,6 +80,8 @@ namespace
         auto material4 = std::make_shared<Refractive>(1.5);
         world.add(std::make_shared<Sphere>(Point3d(0, 2, 3), 0.5, material4));
 
+        // Creates HittableScene with only one element, which is
+        // BVH_Node with all objects from the scene
         world = HittableScene(std::make_shared<BVH_Tree>(world.getScene()));
 
         return world;

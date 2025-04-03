@@ -4,6 +4,7 @@
 
 class BVH_Node;
 
+// BVH structure
 class BVH_Tree : public HittableObject
 {
 public:
@@ -11,6 +12,7 @@ public:
 
 	std::shared_ptr<BVH_Node> buildBVHTree(HittableObjVec& objects, size_t start, size_t end);
 
+	// Hits tree's root
 	bool hit(const Ray& ray, Interval t_MinMax, HitRecord& hitRecord) const;
 
 private:
@@ -25,6 +27,9 @@ public:
 	BVH_Node() = default;
 
 public:
+	// Returns if ray does not hit node's bounding box.
+	// If it hits, then we recursively hit it's
+	// left and right children.
 	bool hit(const Ray& ray, Interval ray_t, HitRecord& hitRecord) const override;
 
 	std::shared_ptr<HittableObject> m_left;

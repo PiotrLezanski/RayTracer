@@ -42,7 +42,6 @@ void Renderer::startRendering()
     const auto startTime = std::chrono::steady_clock::now();
     for (int32 i = 0; i < imageHeight; ++i)
     {
-        std::clog << "\rScanlines remaining: " << (imageHeight - i) << ' ' << std::flush;
         renderingThreads.emplace_back(&Renderer::renderRow, this, i);
     }
 
@@ -53,6 +52,8 @@ void Renderer::startRendering()
             thread.join();
     }
 
+    // Image object now contains rendered image,
+    // so we need to update glad texture, which is shown in the UI
     for (int i = 0; i < imageHeight; ++i)
         updateTextureRow(i);
 
