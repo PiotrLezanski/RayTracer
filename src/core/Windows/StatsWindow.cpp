@@ -1,5 +1,6 @@
 #include "StatsWindow.h"
-#include "../../utils/RayIntersectionCounter.h"
+#include "../../utils/Metrics/RayIntersectionCounter.h"
+#include "../../utils/Metrics/RenderingTimer.h"
 
 void StatsWindow::init()
 {
@@ -9,7 +10,13 @@ void StatsWindow::init()
 void StatsWindow::initImGuiFrame()
 {
 	ImGui::Begin("Rendering statistics");
-	ImGui::Text("Number of ray-object intersection checks from previous render: %d",
+
+	// Rendering time
+	ImGui::Text("Rendering time: %.2f s",
+		RenderTimer.getValue());
+
+	// Number of intersection checks
+	ImGui::Text("Ray-object intersection checks: %d",
 		IntersectionCounter.getValue());
 
 	ImGui::End();

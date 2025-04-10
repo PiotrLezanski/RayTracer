@@ -1,6 +1,6 @@
 #include "Renderer.h"
 
-#include <future>
+#include "../utils/Metrics/RenderingTimer.h"
 
 namespace
 {
@@ -39,7 +39,8 @@ void Renderer::startRendering()
     std::clog << "Rendering started!" << std::endl;
 
     // start timer
-    const auto startTime = std::chrono::steady_clock::now();
+    RenderTimer.start();
+
     for (int32 i = 0; i < imageHeight; ++i)
     {
         renderingThreads.emplace_back(&Renderer::renderRow, this, i);
@@ -58,8 +59,7 @@ void Renderer::startRendering()
         updateTextureRow(i);
 
     // stop timer
-    const auto endTime = std::chrono::steady_clock::now();
-	m_renderTime = static_cast<std::chrono::duration<double>>(endTime-startTime).count();
+    RenderTimer.stop();
 
     std::clog << "\nRendering finished!" << std::endl;
     m_isImageRendered = true;
@@ -67,7 +67,6 @@ void Renderer::startRendering()
 
 void Renderer::stopRendering()
 {
-    m_renderTime = 0;
     m_textureId = 0;
     m_isImageRendered = false;
 }

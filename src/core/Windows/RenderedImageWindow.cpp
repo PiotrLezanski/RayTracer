@@ -1,9 +1,9 @@
 #include "RenderedImageWindow.h"
 
+#include "../BVH/BVH_Tree.h"
 #include "../../Scene/Hittable/HittableScene.h"
 #include "../../Scene/Shapes/Sphere.h"
 #include "../../Scene/Materials/AllMaterials.h"
-#include "../BVH/BVH_Tree.h"
 
 #include <vector>
 
@@ -125,8 +125,6 @@ void RenderedImageWindow::initImGuiFrame()
 
     ImGui::Begin("Rendered Image");
     ImGui::Text("Resolution: %dx%d", imageWidth, imageHeight);
-
-    ImGui::Text("Rendering time: %.2f s", m_renderer->getRenderTime());
 
     // Get the available size in the ImGui window
     ImVec2 availableSize = ImGui::GetContentRegionAvail();
