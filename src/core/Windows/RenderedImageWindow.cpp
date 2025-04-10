@@ -117,9 +117,9 @@ void RenderedImageWindow::initImGuiFrame()
     const int32 imageHeight = m_renderer->getImage()->height();
 
     // Window cannot be made smaller than image
-    ImVec2 minSize(imageWidth, imageHeight);
+    const ImVec2 minSize(imageWidth, imageHeight);
     // No maximum constraint
-    ImVec2 maxSize(FLT_MAX, FLT_MAX);
+    const ImVec2 maxSize(FLT_MAX, FLT_MAX);
     // Apply the constraints to the next window
     ImGui::SetNextWindowSizeConstraints(minSize, maxSize);
 
