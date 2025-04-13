@@ -54,7 +54,7 @@ In ray tracing, the camera acts as the observer, and the image is formed by proj
 
 As you can see, the rays are reflected from different surfaces. Especially when material is semi transparent we need to take into account refracted rays. We can say that the calculation of ray intersaction needs to be done "recursively".  
 
-### Anti-Aliasing
+# Anti-Aliasing
 Anti-aliasing is a technique used to reduce jagged edges (aliasing) in rendered images. This is especially important for high-quality graphics. Common methods include:
 - Super-Sampling Anti-Aliasing (SSAA) - Rendering the scene at a higher resolution and downscaling it to smooth edges.
 - Multi-Sample Anti-Aliasing (MSAA) - Sampling multiple points within a pixel and averaging the results.
@@ -74,7 +74,32 @@ All that makes image appear more sharp from larger distance.
 
 MSAA technique used to produce sharper image.
 
-### Importance of Ray Tracing
+# Bounding Volume Hierarchy
+
+To significantly accelerate ray-scene intersection tests, this project implements a Bounding Volume Hierarchy (BVH) using a bottom-up recursive approach, encapsulated in the *BVH_Tree::buildBVHTree* method.
+
+## Overview
+A BVH is a binary tree where each node represents an axis-aligned bounding box (AABB) that encloses a subset of scene primitives (e.g., spheres).
+Leaf nodes contain individual objects, while internal nodes work like a containers (storing another containers or objects), similar to how Composite design pattern works. 
+At every step, the scene is divided by half splitting objects along the longest axis of containing AAAB.
+It allows rapid rejection of large portions of the scene when casting rays.
+
+![BVH example](Resources/Images/BVH_example.jpg)
+
+## Traversal
+At render time, the ray first intersects the root AABB. If it misses, the entire scene can be skipped. If it hits, traversal continues down the tree. Only leaf-level nodes require expensive ray-object intersection checks.
+
+## Performance
+By replacing the brute-force approach with BVH, the renderer achieves major performance improvements:
+
+| Metric						 | Brute force	  | BVH (implemented)  |
+| ------------------------------ | -------------- | ------------------ |
+| Render time					 | 	~13 seconds   | **~1.5 seconds**   |
+| Ray-object intersection tests  | 	~407 million  | **~11.5 million**  |
+
+*Note: The tests were conducted on scene consisting of 144 spheres with various materials. 10 rays per pixel were shot.*
+
+# Importance of Ray Tracing
 Ray tracing is widely used in:
 - Movies and Animation to produce photorealistic images.
 - Video Games: For real-time lighting and reflections (e.g. ray tracing in modern GPUs).
