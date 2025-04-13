@@ -1,5 +1,7 @@
 #include "Sphere.h"
 
+#include "../../utils/Metrics/RayIntersectionCounter.h"
+
 Sphere::Sphere(Point3d center, double radius, std::shared_ptr<Material> material)
 	: HittableObject(material), m_center(center), m_radius(std::fmax(0, radius))
 {
@@ -9,6 +11,8 @@ Sphere::Sphere(Point3d center, double radius, std::shared_ptr<Material> material
 
 bool Sphere::hit(const Ray& ray, Interval t_MinMax, HitRecord& rec) const
 {
+    IntersectionCounter.increment();
+
     // simple math to get point of intersection of ray and sphere
     const Vec oc = getCenter() - ray.getOrigin();
     const auto a = ray.getDirection().cords_squared();

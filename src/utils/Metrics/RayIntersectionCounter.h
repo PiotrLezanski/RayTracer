@@ -2,6 +2,8 @@
 
 #include <atomic>
 
+using counterType = unsigned long;
+
 // Singleton class to count number of ray-object intersection checks.
 // It's good metric to compare brute force and BVH solutions.
 class RayIntersectionCounter
@@ -23,7 +25,7 @@ public:
 		m_counter.store(0, std::memory_order_relaxed);
 	}
 
-	size_t getValue() const
+	counterType getValue() const
 	{
 		return m_counter.load(std::memory_order_relaxed);
 	}
@@ -31,7 +33,7 @@ public:
 private:
 	RayIntersectionCounter() : m_counter(0) {}
 
-	std::atomic<size_t> m_counter = 0;
+	std::atomic<counterType> m_counter = 0;
 };
 
 inline RayIntersectionCounter& IntersectionCounter = RayIntersectionCounter::getInstance();

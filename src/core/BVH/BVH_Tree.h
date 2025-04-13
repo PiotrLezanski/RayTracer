@@ -10,6 +10,7 @@ class BVH_Tree : public HittableObject
 public:
 	BVH_Tree(HittableObjVec& objects);
 
+	// We create BVH structure only once, when scene is created
 	std::shared_ptr<BVH_Node> buildBVHTree(HittableObjVec& objects, size_t start, size_t end);
 
 	// Hits tree's root

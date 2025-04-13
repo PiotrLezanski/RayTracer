@@ -6,6 +6,7 @@
 #include <memory>
 #include <vector>
 #include <random>
+#include <string>
 
 // Custom types
 using int32 = uint32_t;
@@ -73,13 +74,33 @@ inline void linearToGamma(Color& color)
     color[2] = linearToGamma(color[2]);
 }
 
+// Format large integers
+// e.g. 12312343 -> 12,312,343 
+inline std::string formatLargeIntegers(unsigned long value)
+{
+	std::string num = std::to_string(value);
+    std::string result;
+
+    size_t counter = -1;
+    for(int i = num.size()-1; i>=0; --i)
+    {
+        ++counter;
+        if (counter % 3 == 0 && counter != 0)
+            result.push_back(',');
+
+        result.push_back(num[i]);
+    }
+    std::reverse(result.begin(), result.end());
+
+    return result;
+}
+
 // Vector utility functions
 inline Vec randomVector()
 {
     return Vec(randomDouble(), randomDouble(), randomDouble());
 }
 
-// Vector utility functions
 inline Vec randomVector(double min, double max)
 {
     return Vec(randomDouble(min, max), randomDouble(min, max), randomDouble(min, max));

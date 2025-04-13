@@ -1,5 +1,6 @@
 #include "Renderer.h"
 
+#include "../utils/Metrics/RayIntersectionCounter.h"
 #include "../utils/Metrics/RenderingTimer.h"
 
 namespace
@@ -69,6 +70,7 @@ void Renderer::stopRendering()
 {
     m_textureId = 0;
     m_isImageRendered = false;
+    IntersectionCounter.reset();
 }
 
 void Renderer::rerender()

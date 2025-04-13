@@ -1,14 +1,11 @@
 #pragma once
 
-#include "../core/Windows/WindowsBuilder.h"
-
 #include <memory>
 
-#include "../core/Image.h"
 #include "../core/Camera.h"
+#include "../core/Image.h"
 #include "../core/Renderer.h"
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
+#include "../core/Windows/WindowsBuilder.h"
 
 class MainUI
 {
