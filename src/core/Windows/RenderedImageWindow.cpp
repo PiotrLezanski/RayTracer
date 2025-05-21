@@ -14,26 +14,8 @@ namespace
         HittableScene world;
 
         // Ground with a new color
-        auto ground_material = std::make_shared<Lambertian>(Color(0.3, 0.4, 0.6));
+        auto ground_material = std::make_shared<Lambertian>(Color(0.9, 0.4, 0.6));
         world.add(std::make_shared<Sphere>(Point3d(0, -1000, 0), 1000, ground_material));
-
-        // Function to add a planet with an optional ring
-        auto addPlanetWithRing = [&](Point3d center, double radius, std::shared_ptr<Material> material, bool add_ring, Color ring_color) {
-            // Planet
-            world.add(std::make_shared<Sphere>(center, radius, material));
-
-            // Optional ring
-            if (add_ring) {
-                int ring_count = 20;
-                double ring_radius = radius + 0.5;
-                for (int i = 0; i < ring_count; i++) {
-                    double angle = 2.0 * PI * i / ring_count;
-                    Point3d ring_center = center + Point3d(ring_radius * cos(angle), 0.0, ring_radius * sin(angle));
-                    auto ring_material = std::make_shared<Metal>(ring_color, 0.0);
-                    world.add(std::make_shared<Sphere>(ring_center, 0.1, ring_material));
-                }
-            }
-            };
 
         // Small random spheres
         for (int a = -5; a < 5; a++) {
@@ -68,13 +50,13 @@ namespace
 
         // Planets with rings
         auto material1 = std::make_shared<Refractive>(1.5);
-        addPlanetWithRing(Point3d(0, 1, 0), 1.0, material1, true, Color(0.8, 0.6, 0.2));
+        world.add(std::make_shared<Sphere>(Point3d(0, 1, 0), 1.0, material1));
 
         auto material2 = std::make_shared<Lambertian>(Color(0.4, 0.2, 0.1));
-        addPlanetWithRing(Point3d(-4, 1, 0), 1.0, material2, true, Color(0.5, 0.5, 0.5));
+        world.add(std::make_shared<Sphere>(Point3d(-4, 1, 0), 1.0, material2));
 
         auto material3 = std::make_shared<Metal>(Color(0.7, 0.6, 0.5), 0.0);
-        addPlanetWithRing(Point3d(4, 1, 0), 1.0, material3, false, Color(0, 0, 0));
+        world.add(std::make_shared<Sphere>(Point3d(4, 1, 0), 1.0, material3));
 
         // Glass sphere
         auto material4 = std::make_shared<Refractive>(1.5);

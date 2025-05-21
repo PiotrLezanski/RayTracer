@@ -158,8 +158,8 @@ inline Vec refract(const Vec& uv, const Vec& n, double refractionRatio)
     // Compute the cosine of the angle between the incident vector and the normal.
     double cos_theta = std::fmin(dot_product(-uv, n), 1.0);
 
-    Vec outPerpendicular = refractionRatio * (uv + cos_theta * n);
-    Vec outParallel = -std::sqrt(std::fabs(1.0 - outPerpendicular.cords_squared())) * n;
+    const Vec outPerpendicular = refractionRatio * (uv + cos_theta * n);
+    const Vec outParallel = -std::sqrt(std::fabs(1.0 - outPerpendicular.cords_squared())) * n;
 
     // Return the sum of the perpendicular and parallel components,
     // which gives the final refracted vector
